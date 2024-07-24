@@ -44,15 +44,15 @@ export const Header: React.FC = () => {
   return (
     <header
       className={`${
-        isActive ? "bg-[#111B22] py-4 shadow-md" : "bg-[#263D49] py-6"
-      } fixed w-full z-10 transition-all`}
+        isActive ? "bg-[#E5E4E2] py-4 shadow-md" : "bg-[#F8F8F8] py-6"
+      } fixed w-full z-10 transition-all border-b border-gray-200`}
     >
       <div className="container mx-auto flex items-center justify-between h-full">
         {/* Logo */}
         <Link to={"/"}>
           <div className="flex items-center gap-4">
-            <img className="w-[45px]" src={Logo} alt="Logo" />
-            <h2 className="text-white uppercase text-xl font-bold">JHACADEMY</h2>
+            <img className="w-[35px]" src={Logo} alt="Logo" />
+            <h2 className="text-black uppercase text-xl font-bold">Yogurt Mafer</h2>
           </div>
         </Link>
 

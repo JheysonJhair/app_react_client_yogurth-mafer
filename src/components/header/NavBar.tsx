@@ -8,32 +8,46 @@ export const Navbar = () => {
     <nav className="flex items-center gap-9 font-medium text-primary">
       <Link
         className={`${
-          pathname === "/" ? "text-[#FBC450]" : "text-white"
-        } hover:text-[#FBC450] transition`}
+          pathname === "/" ? "text-[#c04751] font-semibold" : "text-black"
+        } hover:text-[#c04751] transition`}
         to={"/"}
       >
         Inicio
       </Link>
       <Link
         className={`${
-          pathname === "/about" ? "text-[#FBC450]" : "text-white"
-        } hover:text-[#FBC450] transition`}
-        to={"/about"}
+          pathname === "/about-us"
+            ? "text-[#c04751] font-semibold"
+            : "text-black"
+        } hover:text-[#c04751] transition`}
+        to={"/about-us"}
       >
         Nosotros
       </Link>
       <Link
         className={`${
-          pathname === "/products" ? "text-[#FBC450]" : "text-white"
-        } hover:text-[#FBC450] transition`}
+          pathname === "/products"
+            ? "text-[#c04751] font-semibold"
+            : "text-black"
+        } hover:text-[#c04751] transition`}
         to={"/products"}
       >
-        Cursos
+        Productos
       </Link>
+      {/* <Link
+        className={`${
+          pathname === "/blog" ? "text-[#c04751]" : "text-white"
+        } hover:text-[#c04751] transition`}
+        to={"/blog"}
+      >
+        Blog
+      </Link> */}
       <Link
         className={`${
-          pathname === "/contact" ? "text-[#FBC450]" : "text-white"
-        } hover:text-[#FBC450] transition`}
+          pathname === "/contact"
+            ? "text-[#c04751] font-semibold"
+            : "text-black"
+        } hover:text-[#c04751] transition`}
         to={"/contact"}
       >
         Contáctanos

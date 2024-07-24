@@ -46,8 +46,8 @@ export const Product: React.FC<ProductComponentProps> = ({ product }) => {
     <div className="border border-gray-100 rounded-lg shadow-md overflow-hidden">
       {/* Image and buttons */}
       <div className="relative group transition duration-300 hover:shadow-lg">
-        <img
-          className="object-cover object-center w-full h-48 transition-transform transform hover:scale-110"
+      <img
+          className="bject-containw-full h-48 transition-transform transform hover:scale-110"
           src={image}
           alt={title}
         />

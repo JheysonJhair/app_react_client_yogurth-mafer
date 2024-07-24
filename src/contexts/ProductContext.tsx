@@ -43,109 +43,110 @@ const ProductProvider: React.FC<ProductProviderProps> = ({ children }) => {
     const data: Product[] = [
       {
         id: 1,
-        title: "Curso de JavaScript",
-        price: 29.99,
-        description: "Aprende JavaScript desde cero hasta avanzado.",
+        title: "Yogurt Griego Natural",
+        price: 2.99,
+        description: "Yogurt griego natural sin azúcares añadidos. Ideal para un desayuno saludable.",
         category: "5 stars",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMp5Cpjy96WghzX5L-VX7veRkXk3W43hR_A&s",
+        image: "https://montefino.pe/wp-content/uploads/2023/08/yogurt-fresa-1.png",
         rating: {
-          rate: 4.5,
-          count: 120
+          rate: 4.8,
+          count: 150
         },
-        amount: 1 // Agrega un valor predeterminado para amount
+        amount: 1
       },
       {
         id: 2,
-        title: "Curso de React",
-        price: 39.99,
-        description: "Domina React y construye aplicaciones web modernas.",
+        title: "Yogurt con Frutos Rojos",
+        price: 3.49,
+        description: "Delicioso yogurt con una mezcla de frutos rojos y un toque de miel.",
         category: "5 stars",
-        image: "https://i.ytimg.com/vi/H1QR9MvQeNA/maxresdefault.jpg",
-        rating: {
+        image: "https://montefino.pe/wp-content/uploads/2023/08/yogurt-fresa-1.png",
+        rating:  {
           rate: 4.7,
-          count: 150
+          count: 200
         },
-        amount: 1 // Agrega un valor predeterminado para amount
+        amount: 1
       },
       {
         id: 3,
-        title: "Curso de Node.js",
-        price: 34.99,
-        description: "Desarrolla aplicaciones del lado del servidor con Node.js.",
-        category: "5 stars",
-        image: "https://i.ytimg.com/vi/BhvLIzVL8_o/maxresdefault.jpg",
-        rating: {
-          rate: 4.6,
-          count: 100
-        },
-        amount: 1 // Agrega un valor predeterminado para amount
-      },
-      {
-        id: 9,
-        title: "Curso de SQL",
-        price: 24.99,
-        description: "Domina SQL para manejar bases de datos eficientemente.",
-        category: "database",
-        image: "https://i.ytimg.com/vi/Pope-m4nuNc/maxresdefault.jpg",
+        title: "Yogurt Natural Descremado",
+        price: 2.49,
+        description: "Yogurt descremado con un sabor suave y bajo en grasa. Perfecto para una dieta equilibrada.",
+        category: "Descremado",
+        image: "https://montefino.pe/wp-content/uploads/2023/08/yogurt-fresa-1.png",
         rating: {
           rate: 4.6,
           count: 120
         },
-        amount: 1 // Agrega un valor predeterminado para amount
+        amount: 1
       },
       {
-        id: 13,
-        title: "Curso de Git",
-        price: 19.99,
-        description: "Control de versiones eficiente con Git.",
-        category: "4 stars",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIsz8ImWvfDInJmcwLx_LAzSyiA8D5SJE-QQ&s",
-        rating: {
-          rate: 4.6,
-          count: 140
-        },
-        amount: 1 // Agrega un valor predeterminado para amount
-      },
-      {
-        id: 14,
-        title: "Curso de TypeScript",
-        price: 29.99,
-        description: "Mejora tu JavaScript con TypeScript.",
-        category: "4 stars",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjl1gAaG-v5oFQj4Xm2pREUcewyMcdCBEEg&s",
+        id: 4,
+        title: "Yogurt con Miel",
+        price: 3.29,
+        description: "Yogurt cremoso con un toque dulce de miel natural.",
+        category: "5 stars",
+        image: "https://montefino.pe/wp-content/uploads/2023/08/yogurt-fresa-1.png",
         rating: {
           rate: 4.5,
-          count: 100
+          count: 90
         },
-        amount: 1 // Agrega un valor predeterminado para amount
+        amount: 1
       },
       {
-        id: 15,
-        title: "Curso de Swift",
-        price: 39.99,
-        description: "Desarrolla aplicaciones iOS con Swift.",
-        category: "mobile",
-        image: "https://i.blogs.es/b72c12/hero/1366_2000.jpeg",
+        id: 5,
+        title: "Yogurt con Granola",
+        price: 3.99,
+        description: "Yogurt con granola crujiente y frutas. Ideal para un desayuno energético.",
+        category: "Granola",
+        image: "https://montefino.pe/wp-content/uploads/2023/08/yogurt-fresa-1.png",
+        rating: {
+          rate: 4.8,
+          count: 180
+        },
+        amount: 1
+      },
+      {
+        id: 6,
+        title: "Yogurt de Coco",
+        price: 3.59,
+        description: "Yogurt cremoso con sabor a coco, sin azúcares añadidos.",
+        category: "Exótico",
+        image: "https://imagedelivery.net/4fYuQyy-r8_rpBpcY7lH_A/tottusPE/42703127_1/w=800,h=800,fit=pad",
         rating: {
           rate: 4.7,
-          count: 80
+          count: 140
         },
-        amount: 1 // Agrega un valor predeterminado para amount
+        amount: 1
       },
       {
-        id: 16,
-        title: "Curso de Kotlin",
-        price: 34.99,
-        description: "Desarrolla aplicaciones Android con Kotlin.",
-        category: "mobile",
-        image: "https://hackaprende.com/wp-content/uploads/2020/06/logo-curso.002.jpeg",
+        id: 7,
+        title: "Yogurt con Manzana y Canela",
+        price: 3.39,
+        description: "Yogurt con sabor a manzana y un toque de canela, perfecto para cualquier momento del día.",
+        category: "5 stars",
+        image: "https://imagedelivery.net/4fYuQyy-r8_rpBpcY7lH_A/tottusPE/42703127_1/w=800,h=800,fit=pad",
         rating: {
           rate: 4.6,
+          count: 110
+        },
+        amount: 1
+      },
+      {
+        id: 8,
+        title: "Yogurt Vegano",
+        price: 4.19,
+        description: "Yogurt vegano a base de leche de almendras, sin lactosa y sin azúcares añadidos.",
+        category: "5 stars",
+        image: "https://imagedelivery.net/4fYuQyy-r8_rpBpcY7lH_A/tottusPE/42703127_1/w=800,h=800,fit=pad",
+        rating: {
+          rate: 4.5,
           count: 95
         },
-        amount: 1 // Agrega un valor predeterminado para amount
-      },
+        amount: 1
+      }
     ];
+    
     
     setProducts(data);
     setLoading(false); // Cambia el estado de loading después de establecer los productos

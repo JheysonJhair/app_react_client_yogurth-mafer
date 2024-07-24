@@ -19,11 +19,11 @@ export default {
     },
     extend: {
       colors: {
-        primary: '#16f4d0',
+        primary: '#c04751',
         secondary: '#F5E6E0',
       },
       backgroundImage: {
-        hero: "url('./assets/img/nuevo.svg')",
+        hero: "url('./assets/img/bg.jpg')",
       },
     },
   },

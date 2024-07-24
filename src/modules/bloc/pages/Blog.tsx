@@ -1,5 +1,5 @@
 
-export function Product() {
+export function Blog() {
   return (
     <div>Product</div>
   )
