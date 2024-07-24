@@ -4,13 +4,12 @@ import { Header } from "../components/header/Header";
 import { Sidebar } from "../components/sidebar/Sidebar";
 
 function AppLayout() {
-
   return (
     <div className="overflow-hidden">
-    <Header></Header>
-    <Sidebar />
-    <Outlet/>
-    <Footer />
+      <Header></Header>
+      <Sidebar />
+      <Outlet />
+      <Footer />
     </div>
   );
 }

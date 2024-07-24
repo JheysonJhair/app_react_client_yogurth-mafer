@@ -1,38 +1,25 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BsPlus, BsEyeFill, BsStarFill } from "react-icons/bs";
 import { CartContext } from "../../contexts/CartContext";
 
-// Define the types for product props
 interface ProductProps {
-  id: number;
-  image: string;
-  category: string;
-  title: string;
-  price: number;
-  amount: number;
+  product: {
+    id: number;
+    image: string;
+    category: string;
+    title: string;
+    price: number;
+  };
 }
 
-// Define the type for the component props
-interface ProductComponentProps {
-  product: ProductProps;
-}
-
-export const Product: React.FC<ProductComponentProps> = ({ product }) => {
-  const context = useContext(CartContext);
-
-  // Ensure context is defined
-  if (!context) {
-    throw new Error("CartContext must be used within a CartProvider");
-  }
-
-  const { addToCart } = context;
+export const Product: React.FC<ProductProps> = ({ product }) => {
+  const { addToCart } = useContext(CartContext)!;
   const { id, image, category, title, price } = product;
-  const location = useLocation(); // Get current location
+  const location = useLocation();
 
-  // Function to render stars based on rating
   const renderStars = (stars: string) => {
-    const starCount = parseInt(stars, 10); // Convert text to number
+    const starCount = parseInt(stars, 10);
     return (
       <div className="flex items-center">
         {[...Array(starCount)].map((_, index) => (
@@ -42,18 +29,22 @@ export const Product: React.FC<ProductComponentProps> = ({ product }) => {
     );
   };
 
+  const handleAddToCart = () => {
+    const item = { id, image, category, title, price, amount: 1 };
+    addToCart(item);
+  };
+
   return (
     <div className="border border-gray-100 rounded-lg shadow-md overflow-hidden">
-      {/* Image and buttons */}
       <div className="relative group transition duration-300 hover:shadow-lg">
-      <img
-          className="bject-containw-full h-48 transition-transform transform hover:scale-110"
+        <img
+          className="object-contain object-center w-full h-48 transition-transform transform hover:scale-110"
           src={image}
           alt={title}
         />
         <div className="absolute top-2 right-2 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            onClick={() => addToCart(product)}
+            onClick={handleAddToCart}
             className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-md hover:shadow-lg"
           >
             <BsPlus className="text-2xl" />
@@ -66,9 +57,8 @@ export const Product: React.FC<ProductComponentProps> = ({ product }) => {
           </Link>
         </div>
       </div>
-      {/* Product information */}
       <div className="p-4">
-        {location.pathname === "/" && ( // Check if the route is "/"
+        {location.pathname === "/" && (
           <div className="text-sm text-gray-500 capitalize mb-1">
             {renderStars(category)}
           </div>

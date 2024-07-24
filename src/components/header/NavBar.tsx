@@ -34,14 +34,6 @@ export const Navbar = () => {
       >
         Productos
       </Link>
-      {/* <Link
-        className={`${
-          pathname === "/blog" ? "text-[#c04751]" : "text-white"
-        } hover:text-[#c04751] transition`}
-        to={"/blog"}
-      >
-        Blog
-      </Link> */}
       <Link
         className={`${
           pathname === "/contact"

@@ -1,30 +1,25 @@
 import React, { useContext } from "react";
-// Contexto
+
 import { ProductContext } from "../contexts/ProductContext";
-// Componentes
-import { Hero } from "./components/Hero";
+import { Hero,  } from "./components/Hero";
 import { Product } from "../components/sidebar/Product";
 
+interface Product {
+  id: number;
+  image: string;
+  category: string;
+  title: string;
+  price: number;
+}
+
 export const Home: React.FC = () => {
-  const context = useContext(ProductContext);
-
-  if (!context) {
-    return <div>Cargando productos...</div>;
-  }
-
-  const { products, loading, error } = context;
-
-  if (loading) {
-    return <div>Cargando productos...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const { products } = useContext(ProductContext)!;
 
   const filteredProducts = products.filter(
-    (item) => item.category === "5 stars" || item.category === "4 stars"
+    (item: Product) =>
+      item.category === "5 stars" || item.category === "4 stars"
   );
+
 
   return (
     <>
