@@ -1,11 +1,22 @@
 import AppRouter from "./routes";
-import { AuthProvider } from "./hooks/AuthContext";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
+
+import ProductProvider from "./contexts/ProductContext";
+
+import "./index.css";
+import { CartProvider } from "./contexts/CartContext";
+import SidebarProvider from "./contexts/SidebarContext";
 function App() {
   return (
     <AuthProvider>
-      <AppRouter />
+      <SidebarProvider>
+        <CartProvider>
+          <ProductProvider>
+            <AppRouter />
+          </ProductProvider>
+        </CartProvider>
+      </SidebarProvider>
     </AuthProvider>
   );
 }

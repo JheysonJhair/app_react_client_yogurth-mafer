@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { useAuth } from "../../../hooks/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 import { login } from "../../../services/Login";
 
 export default function Login() {

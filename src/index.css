@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-primary text-primary;
+    background-color:  #1B2832;
+  }
+}
+/* Agrega esto a tu archivo CSS */
+.h-screen-20 {
+  height: 60vh; /* 20% de la altura de la pantalla */
+}
