@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
-import { addToCart as addToCartService } from "../services/Cart"; 
+import { addToCart as addToCartService, getCartByUserId } from "../services/Cart"; 
 import { User } from "../types/User";
 
 interface CartItem {
-  IdProduct: any;
+  IdProduct: number;
   Name: string;
   UrlImage: string;
   Price: number;
@@ -18,12 +18,10 @@ interface CartContextType {
   increaseAmount: (id: number) => void;
   decreaseAmount: (id: number) => void;
   itemAmount: number;
-  total: any;
+  total: number;
 }
 
-export const CartContext = createContext<CartContextType | undefined>(
-  undefined
-);
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -39,11 +37,31 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (user) {
+      const fetchCart = async () => {
+        const result = await getCartByUserId(user.IdUser);
+        if (result.success && result.data) {
+          const mappedCart = result.data.map((item) => ({
+            IdProduct: item.Product.IdProduct,
+            Name: item.Product.Name,
+            UrlImage: item.Product.UrlImage,
+            Price: item.Product.Price,
+            amount: item.Quantity,
+          }));
+          setCart(mappedCart);
+        } else {
+          console.error(result.msg);
+        }
+      };
+      fetchCart();
+    }
+  }, [user]);
+
+  useEffect(() => {
     const total = cart.reduce((accumulator, currentItem) => {
       return accumulator + currentItem.Price * currentItem.amount;
     }, 0);
     setTotal(total);
-    console.log("Total actualizado:", total);
   }, [cart]);
 
   useEffect(() => {
@@ -51,30 +69,22 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       return accumulator + currentItem.amount;
     }, 0);
     setItemAmount(amount);
-    console.log("Cantidad de artículos actualizada:", amount);
-  }, [cart]);
-
-  useEffect(() => {
-    console.log("Carrito actualizado:", cart);
   }, [cart]);
 
   const sendCartUpdate = async (idProduct: number, quantity: number) => {
     if (user) {
       const request = {
-        IdUser: user?.IdUser,
+        IdUser: user.IdUser,
         IdProduct: idProduct,
         Quantity: quantity,
       };
 
       try {
-        console.log("envando"+request);
         const response = await addToCartService(request);
-        console.log(response)
+        console.log(response);
       } catch (error) {
         console.error("Error al actualizar el carrito:", error);
       }
-    } else {
-      console.log("No hay usuario autenticado");
     }
   };
 
@@ -88,12 +98,10 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           : cartItem
       );
       setCart(newCart);
-      console.log("Cantidad aumentada para el artículo:", item.IdProduct, "Nueva cantidad:", cartItem.amount + item.amount, "Artículo actualizado:", newCart.find(i => i.IdProduct === item.IdProduct));
-      sendCartUpdate(item.IdProduct, cartItem.amount + item.amount); // Envía la actualización a la API
+      sendCartUpdate(item.IdProduct, cartItem.amount + item.amount);
     } else {
       setCart([...cart, item]);
-      console.log("Artículo nuevo añadido al carrito:", item);
-      sendCartUpdate(item.IdProduct, item.amount); // Envía la adición a la API
+      sendCartUpdate(item.IdProduct, item.amount);
     }
   };
 
@@ -103,14 +111,11 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     setCart(newCart);
     if (removedItem) {
       console.log("Artículo eliminado del carrito:", removedItem);
-    } else {
-      console.log("Artículo no encontrado en el carrito:", id);
     }
   };
 
   const clearCart = () => {
     setCart([]);
-    console.log("Carrito vaciado");
   };
 
   const increaseAmount = (id: number) => {
@@ -120,10 +125,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         item.IdProduct === id ? { ...item, amount: item.amount + 1 } : item
       );
       setCart(newCart);
-      console.log("Cantidad aumentada para el artículo:", id, "Detalles del artículo nuevo:", newCart.find(i => i.IdProduct === id));
-      sendCartUpdate(id, cartItem.amount + 1); // Envía la actualización a la API
-    } else {
-      console.log("Artículo no encontrado en el carrito para aumentar:", id);
+      sendCartUpdate(id, cartItem.amount + 1);
     }
   };
 
@@ -137,11 +139,8 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           item.IdProduct === id ? { ...item, amount: item.amount - 1 } : item
         );
         setCart(newCart);
-        console.log("Cantidad disminuida para el artículo:", id, "Detalles del artículo nuevo:", newCart.find(i => i.IdProduct === id));
-        sendCartUpdate(id, cartItem.amount - 1); // Envía la actualización a la API
+        sendCartUpdate(id, cartItem.amount - 1);
       }
-    } else {
-      console.log("Artículo no encontrado en el carrito para disminuir:", id);
     }
   };
 
