@@ -1,4 +1,3 @@
-import axios from "axios";
 import { User } from "../types/User";
 
 interface ApiResponse {
@@ -7,7 +6,7 @@ interface ApiResponse {
   data: User[];
 }
 
-const API_URL = "https://esappsoccer-production.up.railway.app/api";
+const API_URL = "https://bkmaferyogurt-production.up.railway.app/api";
 
 //---------------------------------------------------------------- GET USER
 export async function obtenerUsuarios(): Promise<User[]> {
@@ -27,42 +26,8 @@ export async function obtenerUsuarios(): Promise<User[]> {
   }
 }
 
-//---------------------------------------------------------------- VERIFICATE MAIL -  VERIFICATE CODE => USER
-
-export const enviarVerificacionEmail = async (email: string) => {
-  try {
-    const response = await fetch(`${API_URL}/mailValidation?email=${email}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("API: Error al enviar la verificación de email");
-    }
-    return response;
-  } catch (error) {
-    console.error("API: Error al enviar la verificación de email", error);
-    throw error;
-  }
-};
-
-export const verificarCodigo = async (Email: string, Code: string) => {
-  try {
-    const response = await axios.post(`${API_URL}/user/validate`, {
-      Email,
-      Code,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("API: Error al verificar el código", error);
-    throw error;
-  }
-};
-
 //---------------------------------------------------------------- POST USER
-export async function crearUsuario(
+export async function registerUser(
   usuario: Partial<User>
 ): Promise<{ msg: string; success: boolean }> {
   try {

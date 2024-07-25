@@ -30,7 +30,7 @@ export const Contact = () => {
           </div>
         )}
         <div className="text-center mb-10">
-          <h3 className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight text-white">
+          <h3 className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight text-white" style={{ color: '#373739' }}>
             Contá<span className="text-primary">ctanos</span>
           </h3>
         </div>
@@ -39,7 +39,7 @@ export const Contact = () => {
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
-                className="block uppercase tracking-wide text-white text-xs font-bold mb-2"
+                className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
                 htmlFor="grid-first-name"
               >
                 Nombre:
@@ -55,7 +55,7 @@ export const Contact = () => {
             </div>
             <div className="w-full md:w-1/2 px-3">
               <label
-                className="block uppercase tracking-wide text-white text-xs font-bold mb-2"
+                className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
                 htmlFor="grid-last-name"
               >
                 Apellidos:
@@ -73,7 +73,7 @@ export const Contact = () => {
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
               <label
-                className="block uppercase tracking-wide text-white text-xs font-bold mb-2"
+                className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
                 htmlFor="grid-password"
               >
                 Correo Electrónico:
@@ -92,7 +92,7 @@ export const Contact = () => {
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
               <label
-                className="block uppercase tracking-wide text-white text-xs font-bold mb-2"
+                className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
                 htmlFor="grid-password"
               >
                 Mensaje:
@@ -107,7 +107,7 @@ export const Contact = () => {
             </div>
             <div className="flex justify-center w-full px-3">
               <button
-                className="shadow bg-indigo-600 hover:bg-indigo-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-6 rounded"
+                className="shadow bg-[#373739] hover:bg-[#646468] focus:shadow-outline focus:outline-none text-white font-bold py-2 px-6 rounded"
                 type="submit"
               >
                 Enviar mensaje

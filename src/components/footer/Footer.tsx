@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div>
-          <h3 className="font-bold mb-4">Conecta con JHACADEMY</h3>
+          <h3 className="font-bold mb-4">Conecta con Yogut Mafer</h3>
           <ul>
             <li>
               <a href="#">Soporte al cliente</a>

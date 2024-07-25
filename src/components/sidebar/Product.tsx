@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { BsPlus, BsEyeFill, BsStarFill } from "react-icons/bs";
-import { CartContext } from "../../contexts/CartContext";
+import React, { useContext } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { BsPlus, BsEyeFill, BsStarFill } from 'react-icons/bs';
+import { CartContext } from '../../contexts/CartContext';
 
 interface ProductProps {
   product: {
@@ -16,10 +16,10 @@ interface ProductProps {
 export const Product: React.FC<ProductProps> = ({ product }) => {
   const { addToCart } = useContext(CartContext)!;
   const { id, image, category, title, price } = product;
-  const location = useLocation();
+  const location = useLocation(); 
 
   const renderStars = (stars: string) => {
-    const starCount = parseInt(stars, 10);
+    const starCount = parseInt(stars, 10); 
     return (
       <div className="flex items-center">
         {[...Array(starCount)].map((_, index) => (
@@ -31,7 +31,7 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
 
   const handleAddToCart = () => {
     const item = { id, image, category, title, price, amount: 1 };
-    addToCart(item);
+    addToCart(item); 
   };
 
   return (
@@ -58,7 +58,7 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
         </div>
       </div>
       <div className="p-4">
-        {location.pathname === "/" && (
+        {location.pathname === "/" && ( 
           <div className="text-sm text-gray-500 capitalize mb-1">
             {renderStars(category)}
           </div>

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import { ProductContext } from "../contexts/ProductContext";
-import { Hero,  } from "./components/Hero";
+import { Hero } from "./components/Hero";
 import { Product } from "../components/sidebar/Product";
 
 interface Product {
@@ -19,7 +19,6 @@ export const Home: React.FC = () => {
     (item: Product) =>
       item.category === "5 stars" || item.category === "4 stars"
   );
-
 
   return (
     <>

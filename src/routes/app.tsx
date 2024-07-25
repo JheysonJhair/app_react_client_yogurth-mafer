@@ -19,6 +19,10 @@ const appRouter = [
         element: <Home />,
       },
       {
+        path: "/login",
+        element: <Home />,
+      },
+      {
         path: "/about-us",
         element: <AboutUs />,
       },

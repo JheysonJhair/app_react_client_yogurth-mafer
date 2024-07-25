@@ -2,38 +2,26 @@ export interface User {
   IdUser?: number;
   FirstName: string;
   LastName: string;
-  Password?: string;
   Dni: string;
-  EmployeeCode?: string;
-  IdArea?: number | string;
-  Gerencia?: number | string;
-  Shift: string;
-  PhoneNumber: string;
-  Mail: string;
+  Address?: string;
+  Phone?: string;
+  Mail?: string;
   Rol: number;
-  IndActive?: boolean;
-  NameArea?: string;
-  areaIdArea?: number;
-  Date?: string;
+  Password?: string;
+  BirthDate?: string;
 }
 
 export interface ErrorMessages {
-  IdUser?: string;
-  FirstName?: string;
-  LastName?: string;
-  Password?: string;
-  Dni?: string;
-  EmployeeCode?: string;
-  Gerencia?: number | string;
-  IdArea?: number | string;
-  Shift?: string;
-  PhoneNumber?: string;
+  IdUser?: number;
+  FirstName: string;
+  LastName: string;
+  Dni: string;
+  Address?: string;
+  Phone?: string;
   Mail?: string;
-  Rol?: string;
-  IndActive?: string;
-  NameArea?: string;
-  areaIdArea?: string;
-  Date?: string;
+  Rol: number;
+  Password?: string;
+  BirthDate?: string;
 }
 
 export interface Login {

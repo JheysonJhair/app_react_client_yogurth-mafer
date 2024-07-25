@@ -26,6 +26,7 @@ const ProductProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      
       const data: Product[] = [
         {
           id: 1,

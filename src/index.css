@@ -5,7 +5,7 @@
 @layer base {
   body {
     @apply font-primary text-primary;
-    background-color:  #1B2832;
+    background-color:  #FFFFFF;
   }
 }
 /* Agrega esto a tu archivo CSS */
