@@ -5,7 +5,7 @@ import BackgroundImageAboutme from "../../../assets/img/aboutme.svg";
 
 export const AboutUs = () => {
   useEffect(() => {
-    document.title = "Acerca de JHEWEKEEND - Cursos Virtuales";
+    document.title = "Acerca de Nosotros";
   }, []);
 
   return (

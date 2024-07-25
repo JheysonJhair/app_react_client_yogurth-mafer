@@ -5,21 +5,16 @@ import { Products } from "../modules/Product/pages/Products";
 import { AboutUs } from "../modules/about-us/pages/AboutUs";
 import { Blog } from "../modules/bloc/pages/Blog";
 import { Contact } from "../modules/contact/pages/Contact";
-
+import { ProductDetails } from "../modules/Product/pages/ProductDetails";
+import { Payment } from "../modules/payment/pages/Payment";
 
 const appRouter = [
   {
     path: "/",
-    element: (
-        <AppLayout />
-    ),
+    element: <AppLayout />,
     children: [
       {
         path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/login",
         element: <Home />,
       },
       {
@@ -29,6 +24,14 @@ const appRouter = [
       {
         path: "/products",
         element: <Products />,
+      },
+      {
+        path: "/product/:id",
+        element: <ProductDetails />,
+      },
+      {
+        path: "/payment",
+        element: <Payment />,
       },
       {
         path: "/blog",

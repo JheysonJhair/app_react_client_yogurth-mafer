@@ -5,11 +5,11 @@ import { Hero } from "./components/Hero";
 import { Product } from "../components/sidebar/Product";
 
 interface Product {
-  id: number;
-  image: string;
-  category: string;
-  title: string;
-  price: number;
+  IdProduct: number;
+  UrlImage: string;
+  Category: string;
+  Name: string;
+  Price: number;
 }
 
 export const Home: React.FC = () => {
@@ -17,7 +17,7 @@ export const Home: React.FC = () => {
 
   const filteredProducts = products.filter(
     (item: Product) =>
-      item.category === "5 stars" || item.category === "4 stars"
+      item.Category === "5 estrellas" || item.Category === "4 estrellas"
   );
 
   return (
@@ -30,7 +30,7 @@ export const Home: React.FC = () => {
           </h1>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 max-w-sm mx-auto md:max-w-none md:mx-0">
             {filteredProducts.map((product) => (
-              <Product product={product} key={product.id} />
+              <Product product={product} key={product.IdProduct} />
             ))}
           </div>
         </div>

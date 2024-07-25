@@ -25,7 +25,7 @@ export const Products: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4 max-w-sm mx-auto md:max-w-none md:mx-0">
           {products.map((product) => (
-            <Product product={product} key={product.id} />
+            <Product product={product} key={product.IdProduct} />
           ))}
         </div>
       </div>

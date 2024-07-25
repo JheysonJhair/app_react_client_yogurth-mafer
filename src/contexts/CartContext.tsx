@@ -1,10 +1,10 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 interface CartItem {
-  id: number;
-  image: string;
-  title: string;
-  price: number;
+  IdProduct: any;
+  Name: string;
+  UrlImage: string;
+  Price: number;
   amount: number;
 }
 
@@ -30,7 +30,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const total = cart.reduce((accumulator, currentItem) => {
-      return accumulator + currentItem.price * currentItem.amount;
+      return accumulator + currentItem.Price * currentItem.amount;
     }, 0);
     setTotal(total);
   }, [cart]);
@@ -43,11 +43,11 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [cart]);
 
   const addToCart = (item: CartItem) => {
-    const cartItem = cart.find((cartItem) => cartItem.id === item.id);
+    const cartItem = cart.find((cartItem) => cartItem.IdProduct === item.IdProduct);
 
     if (cartItem) {
       const newCart = cart.map((cartItem) =>
-        cartItem.id === item.id
+        cartItem.IdProduct === item.IdProduct
           ? { ...cartItem, amount: cartItem.amount + item.amount }
           : cartItem
       );
@@ -58,7 +58,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const removeFromCart = (id: number) => {
-    const newCart = cart.filter((item) => item.id !== id);
+    const newCart = cart.filter((item) => item.IdProduct !== id);
     setCart(newCart);
   };
 
@@ -67,20 +67,20 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const increaseAmount = (id: number) => {
-    const cartItem = cart.find((item) => item.id === id);
+    const cartItem = cart.find((item) => item.IdProduct === id);
     if (cartItem) {
       addToCart({ ...cartItem, amount: 1 });
     }
   };
 
   const decreaseAmount = (id: number) => {
-    const cartItem = cart.find((item) => item.id === id);
+    const cartItem = cart.find((item) => item.IdProduct === id);
     if (cartItem) {
       if (cartItem.amount < 2) {
         removeFromCart(id);
       } else {
         const newCart = cart.map((item) =>
-          item.id === id ? { ...item, amount: item.amount - 1 } : item
+          item.IdProduct === id ? { ...item, amount: item.amount - 1 } : item
         );
         setCart(newCart);
       }

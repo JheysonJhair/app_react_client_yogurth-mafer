@@ -1,12 +1,12 @@
 export interface Product {
-  IdProduct?: number;
+  IdProduct: any;
   Name: string;
   Description: string;
-  NutritionalInformation: string;
+  NutritionalInformation?: string;
   Price: number;
-  UrlImage?: string;
-  Visible: boolean;
+  UrlImage: string;
+  Visible?: boolean;
   Stock?: number;
-  Featured:boolean;
+  Category: string;
   amount?: number;
 }

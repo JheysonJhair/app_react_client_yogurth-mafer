@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { SidebarContext } from "../../contexts/SidebarContext";
 import { CartContext } from "../../contexts/CartContext";
@@ -9,19 +9,25 @@ import Logo from "../../assets/img/logo.png";
 import { Login, User } from "../../types/User";
 import { login } from "../../services/Login";
 import { registerUser } from "../../services/Usuario";
-import { useAuth } from "../../contexts/AuthContext";
 
 export const Header: React.FC = () => {
-  const { setUser, user } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState<any>({});
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState<boolean>(false); 
 
   const { isOpen, setIsOpen } = useContext(SidebarContext)!;
   const { itemAmount } = useContext(CartContext)!;
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,6 +75,7 @@ export const Header: React.FC = () => {
         };
         response = await login(loginData);
         if (response.success) {
+          localStorage.setItem("user", JSON.stringify(response.data));
           Swal.fire({
             title: "Correcto!",
             text: "Inicio de sesión exitoso.",
@@ -76,9 +83,8 @@ export const Header: React.FC = () => {
             confirmButtonText: "Aceptar",
           }).then(() => {
             handleCloseModal();
+            window.location.reload();
           });
-          setUser(response.data);
-          navigate("/login");
         } else {
           Swal.fire({
             title: "Error!",
@@ -100,7 +106,6 @@ export const Header: React.FC = () => {
           BirthDate: "",
         };
         response = await registerUser(userData);
-        console.log(response);
         if (response.success) {
           Swal.fire({
             title: "Correcto!",
@@ -123,8 +128,21 @@ export const Header: React.FC = () => {
       setError("An error occurred. Please try again.");
     }
   };
-  const shouldShowNavMenu = location.pathname == "/login";
-  console.log(shouldShowNavMenu);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.reload();
+    Swal.fire({
+      title: "Correcto!",
+      text: "Has cerrado sesión.",
+      icon: "success",
+      confirmButtonText: "Aceptar",
+    });
+  };
+
+  const shouldShowNavMenu = user?.FirstName;
+
   return (
     <>
       <header
@@ -156,15 +174,42 @@ export const Header: React.FC = () => {
               </div>
             </div>
             {shouldShowNavMenu ? (
-              <div className="flex items-center gap-2">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
-                  alt="User"
-                  className="w-8 h-8 rounded-full border-2 border-primary m-0"
-                />
-                <div className="flex flex-col">
-                  <h2 className="text-primary m-0 p-0">{user?.FirstName}</h2>
+              <div className="relative">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+                    alt="User"
+                    className="w-8 h-8 rounded-full border-2 border-primary m-0"
+                  />
+                  <div className="flex flex-col">
+                    <h2 className="text-primary m-0 p-0">{user?.FirstName}</h2>
+                  </div>
                 </div>
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                    <ul className="py-2">
+                      <li>
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                          Perfil
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                          Salir
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex gap-4">
@@ -188,11 +233,7 @@ export const Header: React.FC = () => {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div
-            className={`bg-white w-full mx-4 rounded-lg shadow-lg ${
-              modalType === "login" ? "w-[350px]" : "w-[700px]"
-            }`}
-          >
+          <div className={"bg-white min-w-96 mx-4 rounded-lg shadow-lg "}>
             <div className="p-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
@@ -333,7 +374,7 @@ export const Header: React.FC = () => {
                           type="email"
                           id="email"
                           name="email"
-                          placeholder="Ingresa tu correo electrónico"
+                          placeholder="Ingresa tu correo "
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
                           required
