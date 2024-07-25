@@ -185,7 +185,7 @@ export const Header: React.FC = () => {
                     className="w-8 h-8 rounded-full border-2 border-primary m-0"
                   />
                   <div className="flex flex-col">
-                    <h2 className="text-primary m-0 p-0">{user?.Dni}</h2>
+                    <h2 className="text-primary m-0 p-0">{user?.FirstName}</h2>
                   </div>
                 </div>
                 {showDropdown && (

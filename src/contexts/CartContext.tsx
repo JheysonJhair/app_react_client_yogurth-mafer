@@ -1,8 +1,16 @@
+// CartProvider.tsx
+
 import React, { createContext, useState, useEffect, ReactNode } from "react";
-import { addToCart as addToCartService, getCartByUserId } from "../services/Cart"; 
+import {
+  addToCart as addToCartService,
+  getCartByUserId,
+  deleteCartItem,
+  clearAllCartItems,
+} from "../services/Cart";
 import { User } from "../types/User";
 
 interface CartItem {
+  IdCartItem: number; // Incluir IdCartItem
   IdProduct: number;
   Name: string;
   UrlImage: string;
@@ -18,10 +26,12 @@ interface CartContextType {
   increaseAmount: (id: number) => void;
   decreaseAmount: (id: number) => void;
   itemAmount: number;
-  total: number;
+  total: any;
 }
 
-export const CartContext = createContext<CartContextType | undefined>(undefined);
+export const CartContext = createContext<CartContextType | undefined>(
+  undefined
+);
 
 const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -29,6 +39,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [total, setTotal] = useState<number>(0);
   const [user, setUser] = useState<User | null>(null);
 
+  //---------------------------------------------------------------- LOCAL STORAGE
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -36,12 +47,15 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, []);
 
+  //---------------------------------------------------------------- GET PRODUCT
   useEffect(() => {
     if (user) {
       const fetchCart = async () => {
         const result = await getCartByUserId(user.IdUser);
+        console.log(result.msg);
         if (result.success && result.data) {
           const mappedCart = result.data.map((item) => ({
+            IdCartItem: item.IdCartItem,
             IdProduct: item.Product.IdProduct,
             Name: item.Product.Name,
             UrlImage: item.Product.UrlImage,
@@ -57,6 +71,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [user]);
 
+  //-----------------------------------TOTAL & QUANTITY
   useEffect(() => {
     const total = cart.reduce((accumulator, currentItem) => {
       return accumulator + currentItem.Price * currentItem.amount;
@@ -71,6 +86,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     setItemAmount(amount);
   }, [cart]);
 
+  //---------------------------------------------------------------- ADD & UPDATE PRODUCT
   const sendCartUpdate = async (idProduct: number, quantity: number) => {
     if (user) {
       const request = {
@@ -81,15 +97,17 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       try {
         const response = await addToCartService(request);
-        console.log(response);
+        console.log(response.msg);
       } catch (error) {
         console.error("Error al actualizar el carrito:", error);
       }
     }
   };
-
+  //-------------------------------------- ADD
   const addToCart = (item: CartItem) => {
-    const cartItem = cart.find((cartItem) => cartItem.IdProduct === item.IdProduct);
+    const cartItem = cart.find(
+      (cartItem) => cartItem.IdProduct === item.IdProduct
+    );
 
     if (cartItem) {
       const newCart = cart.map((cartItem) =>
@@ -105,19 +123,34 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
-  const removeFromCart = (id: number) => {
+  //---------------------------------------------------------------- DELETE PRODUCT
+  const removeFromCart = async (id: number) => {
     const removedItem = cart.find((item) => item.IdProduct === id);
-    const newCart = cart.filter((item) => item.IdProduct !== id);
-    setCart(newCart);
+
     if (removedItem) {
-      console.log("Artículo eliminado del carrito:", removedItem);
+      const result = await deleteCartItem(removedItem.IdCartItem);
+      console.log(result.msg) ;
+      if (result.success) {
+        const newCart = cart.filter((item) => item.IdProduct !== id);
+        setCart(newCart);
+      } else {
+        console.error(result.msg);
+      }
     }
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCart = async () => {
+    if (user) {
+      const result = await clearAllCartItems(user.IdUser); 
+      console.log(result.msg) ;
+      if (result.success) {
+        setCart([]);
+      } else {
+        console.error(result.msg);
+      }
+    }
   };
-
+  //-------------------------------------- UPDATE
   const increaseAmount = (id: number) => {
     const cartItem = cart.find((item) => item.IdProduct === id);
     if (cartItem) {

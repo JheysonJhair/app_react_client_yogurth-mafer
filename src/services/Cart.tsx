@@ -60,6 +60,7 @@ export const getCartByUserId = async (userId: number): Promise<ApiResponse<CartI
     const data = await response.json();
     if (response.ok) {
       return {
+        msg: data.msg,
         success: true,
         data: data.data, // `data` puede ser undefined, manejarlo en el componente
       };
@@ -104,6 +105,38 @@ export const deleteCartItem = async (idCartItem: number): Promise<DeleteCartItem
     }
   } catch (error) {
     console.error("Error al eliminar el artículo del carrito:", error);
+    return {
+      success: false,
+      msg: "Error de conexión",
+    };
+  }
+};
+// services/Cart.ts
+
+interface ClearCartResponse {
+  success: boolean;
+  msg: string;
+}
+
+export const clearAllCartItems = async (idUser: number): Promise<ClearCartResponse> => {
+  try {
+    const response = await fetch(`https://bkmaferyogurt-production.up.railway.app/api/cart/deleteAll/${idUser}`, {
+      method: 'DELETE',
+    });
+    const data = await response.json();
+    if (response.ok) {
+      return {
+        success: data.success,
+        msg: data.msg,
+      };
+    } else {
+      return {
+        success: false,
+        msg: data.msg || "Error al eliminar todos los artículos del carrito",
+      };
+    }
+  } catch (error) {
+    console.error("Error al eliminar todos los artículos del carrito:", error);
     return {
       success: false,
       msg: "Error de conexión",
