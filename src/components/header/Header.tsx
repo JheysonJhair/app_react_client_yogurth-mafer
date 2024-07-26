@@ -17,7 +17,7 @@ export const Header: React.FC = () => {
   const [modalType, setModalType] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState<any>({});
   const [error, setError] = useState<string | null>(null);
-  const [showDropdown, setShowDropdown] = useState<boolean>(false); 
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
   const { isOpen, setIsOpen } = useContext(SidebarContext)!;
   const { itemAmount } = useContext(CartContext)!;
