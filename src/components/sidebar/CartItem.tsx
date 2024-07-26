@@ -62,10 +62,10 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             </div>
 
             <div className="flex flex-1 items-center justify-around">
-              $ {Price}
+            S/ {Price}.00
             </div>
             <div className="flex-1 flex justify-end items-center text-primary font-medium">
-              {`$ ${parseFloat((Price * amount).toFixed(2))}`}
+              {`S/ ${parseFloat((Price * amount).toFixed(2))}`}
             </div>
           </div>
         </div>

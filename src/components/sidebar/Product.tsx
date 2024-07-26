@@ -68,7 +68,7 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
             {Name}
           </h2>
         </Link>
-        <div className="text-lg font-semibold text-primary">${Price}</div>
+        <div className="text-lg font-semibold text-primary">S/{Price}.00</div>
       </div>
     </div>
   );

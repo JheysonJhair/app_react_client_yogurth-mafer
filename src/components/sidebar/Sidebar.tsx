@@ -104,7 +104,7 @@ export const Sidebar: React.FC = () => {
       <div className="flex flex-col gap-y-3 py-4 mt-4">
         <div className="flex w-full justify-between items-center">
           <div className="uppercase font-semibold">
-            <span className="mr-2">Total:</span>$ {parseFloat(total).toFixed(2)}
+            <span className="mr-2">Total:</span>s./ {parseFloat(total).toFixed(2)}
           </div>
           <div
             onClick={clearCart}
@@ -117,7 +117,7 @@ export const Sidebar: React.FC = () => {
           onClick={handlePayment}
           className="bg-[#373739] flex p-4 justify-center items-center text-white w-full font-medium"
         >
-          Ver Carrito
+          Pagar
         </button>
 
         <a

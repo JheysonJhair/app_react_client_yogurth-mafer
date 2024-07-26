@@ -73,7 +73,7 @@ export const ProductDetails: React.FC = () => {
               {Name}
             </h1>
             <div className="text-xl text-red-500 font-medium mb-6">
-              $ {Price}
+            S/ {Price}.00
             </div>
             <p className="mb-8 text-[#373739]">{Description}</p>
             <p className="mb-8  text-[#373739]">
