@@ -1,5 +1,3 @@
-// CartProvider.tsx
-
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import {
   addToCart as addToCartService,
@@ -10,7 +8,6 @@ import {
 import { User } from "../types/User";
 
 interface CartItem {
-  IdCartItem: number; // Incluir IdCartItem
   IdProduct: number;
   Name: string;
   UrlImage: string;
@@ -34,7 +31,7 @@ export const CartContext = createContext<CartContextType | undefined>(
 );
 
 const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<any[]>([]);
   const [itemAmount, setItemAmount] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [user, setUser] = useState<User | null>(null);
@@ -141,6 +138,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const clearCart = async () => {
     if (user) {
+      console.log(user)
       const result = await clearAllCartItems(user.IdUser); 
       console.log(result.msg) ;
       if (result.success) {
@@ -148,7 +146,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       } else {
         console.error(result.msg);
       }
-    }
+    } 
   };
   //-------------------------------------- UPDATE
   const increaseAmount = (id: number) => {

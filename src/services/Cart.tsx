@@ -46,6 +46,7 @@ interface CartItemResponse {
   Quantity: number;
   DateAdded: string;
   Product: Product;
+  Cart:any
 }
 
 interface ApiResponse<T> {
