@@ -1,15 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Footer } from "../components/footer/Footer";
 import { Header } from "../components/header/Header";
 import { Sidebar } from "../components/sidebar/Sidebar";
+import { HeaderPayment } from "../components/header/HeaderPayment";
 
 function AppLayout() {
+  const location = useLocation();
+  const isPaymentPage = location.pathname.startsWith("/payment");
+
   return (
     <div className="overflow-hidden">
-      <Header></Header>
-      <Sidebar />
+      {!isPaymentPage && <Header />}
+      {!isPaymentPage && <Sidebar />}
+      {isPaymentPage && <HeaderPayment />}
       <Outlet />
-      <Footer />
+      {!isPaymentPage && <Footer />}
     </div>
   );
 }

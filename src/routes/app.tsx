@@ -7,6 +7,7 @@ import { Blog } from "../modules/bloc/pages/Blog";
 import { Contact } from "../modules/contact/pages/Contact";
 import { ProductDetails } from "../modules/Product/pages/ProductDetails";
 import { Payment } from "../modules/payment/pages/Payment";
+import { PaymentCheckout } from "../modules/payment/pages/PaymentCheckout";
 
 const appRouter = [
   {
@@ -32,6 +33,10 @@ const appRouter = [
       {
         path: "/payment",
         element: <Payment />,
+      },
+      {
+        path: "/payment/checkout/:paymentOption",
+        element: <PaymentCheckout />,
       },
       {
         path: "/blog",

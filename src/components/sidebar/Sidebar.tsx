@@ -117,7 +117,7 @@ export const Sidebar: React.FC = () => {
           onClick={handlePayment}
           className="bg-[#373739] flex p-4 justify-center items-center text-white w-full font-medium"
         >
-          Pagar
+          Empezar a pagar
         </button>
 
         <a
