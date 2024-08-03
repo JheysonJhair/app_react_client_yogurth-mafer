@@ -63,7 +63,7 @@ export const getCartByUserId = async (userId: number): Promise<ApiResponse<CartI
       return {
         msg: data.msg,
         success: true,
-        data: data.data, // `data` puede ser undefined, manejarlo en el componente
+        data: data.data, 
       };
     } else {
       return {
@@ -79,8 +79,6 @@ export const getCartByUserId = async (userId: number): Promise<ApiResponse<CartI
     };
   }
 };
-
-// services/Cart.ts
 
 interface DeleteCartItemResponse {
   success: boolean;
@@ -112,7 +110,6 @@ export const deleteCartItem = async (idCartItem: number): Promise<DeleteCartItem
     };
   }
 };
-// services/Cart.ts
 
 interface ClearCartResponse {
   success: boolean;
