@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getCartByUserId } from "../../../services/Cart";
 import { User } from "../../../types/User";
 import { useNavigate } from "react-router-dom";
-import "../style.css";  
+import "../style.css";
 
 interface Product {
   IdProduct: number;
@@ -74,7 +74,8 @@ export const Payment = () => {
 
   const handlePaymentOption = (option: string) => {
     handleCloseModal();
-    navigate(`/payment/checkout/${option}`);
+    const totalAmount = calculateTotal();
+    navigate(`/payment/checkout/${option}`, { state: { totalAmount } });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
