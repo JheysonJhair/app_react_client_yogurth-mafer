@@ -1,41 +1,26 @@
 import { useState, useEffect } from "react";
-import { getCartByUserId } from "../../../services/Cart";
-import { User } from "../../../types/User";
 import { useNavigate } from "react-router-dom";
+
+import { User } from "../../../types/User";
+import { CartItemResponse, Shipment } from "../../../types/Shipment";
+
+import { getCartByUserId } from "../../../services/Cart";
+import { fetchLastShipment, insertShipment } from "../../../services/Shipment";
+
 import "../style.css";
-
-interface Product {
-  IdProduct: number;
-  Name: string;
-  Price: number;
-  UrlImage: string;
-}
-
-interface CartItemResponse {
-  IdCartItem: number;
-  Quantity: number;
-  Product: Product;
-}
-
-interface Shipment {
-  IdShipment: number;
-  IdUser: number;
-  Company: string;
-  Region: string;
-  Province: string;
-  District: string;
-  Address: string;
-  DateAdd: string;
-}
+import Swal from "sweetalert2";
 
 export const Payment = () => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
   const [selection, setSelection] = useState("");
   const [store, setStore] = useState("");
   const [department, setDepartment] = useState("");
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [cartItems, setCartItems] = useState<CartItemResponse[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -43,8 +28,10 @@ export const Payment = () => {
   const departments = ["Departamento 1", "Departamento 2"];
   const provinces = ["Provincia 1", "Provincia 2"];
   const districts = ["Distrito 1", "Distrito 2"];
-  const navigate = useNavigate();
 
+  const [shipmentId, setShipmentId] = useState<number | null>(null);
+
+  //---------------------------------------------------------------- GET USER LOCAL STORAGE
   useEffect(() => {
     const fetchUser = () => {
       const userData = localStorage.getItem("user");
@@ -60,6 +47,7 @@ export const Payment = () => {
     fetchUser();
   }, []);
 
+  //---------------------------------------------------------------- GET CARD
   const loadCartItems = async (userId: number) => {
     setIsLoading(true);
     try {
@@ -74,13 +62,13 @@ export const Payment = () => {
     }
   };
 
+  //---------------------------------------------------------------- GET SHIPMENT
   const loadLastShipment = async (userId: number) => {
     try {
-      const response = await fetch(
-        `https://bkmaferyogurt-production.up.railway.app/api/shipment/lastShipment/${userId}`
-      );
-      const result = await response.json();
+      const result = await fetchLastShipment(userId);
+
       if (result.success && result.data.length > 0) {
+        setShipmentId(result.data[0].IdShipment);
         const lastShipment: Shipment = result.data[0];
         if (lastShipment.Company) {
           setSelection("recoger");
@@ -97,6 +85,7 @@ export const Payment = () => {
     }
   };
 
+  //------------------------------------ CHANGE DATA
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDepartment(e.target.value);
   };
@@ -105,26 +94,32 @@ export const Payment = () => {
     setProvince(e.target.value);
   };
 
+  //------------------------------------ MODAL
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handlePaymentOption = (option: string) => {
-    handleCloseModal();
-    const totalAmount = calculateTotal();
-    navigate(`/payment/checkout/${option}`, { state: { totalAmount } });
-  };
-
+  //---------------------------------------------------------------- POST SHIPMENT
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (selection === "recoger" && !store) {
-      console.log("Por favor, seleccione una sede.");
+      Swal.fire({
+        title: "Error!",
+        text: "Por favor, seleccione una sede.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
       return;
     }
 
     if (selection === "envio") {
       if (!department || !province || !district) {
-        console.log("Por favor, complete todos los campos de dirección.");
+        Swal.fire({
+          title: "Error!",
+          text: "Por favor, complete todos los campos de dirección.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
         return;
       }
     }
@@ -139,20 +134,8 @@ export const Payment = () => {
     };
 
     try {
-      const response = await fetch(
-        "https://bkmaferyogurt-production.up.railway.app/api/shipment/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(shipmentData),
-        }
-      );
-
-      const result = await response.json();
+      const result = await insertShipment(shipmentData);
       if (result.success) {
-        console.log("Pedido realizado con éxito");
         handleShowModal();
       } else {
         console.error("Error al realizar el pedido:", result.msg);
@@ -162,6 +145,23 @@ export const Payment = () => {
     }
   };
 
+  //---------------------------------- OPTION PAYMENT
+  const handlePaymentOption = (option: string) => {
+    handleCloseModal();
+    const totalAmount = calculateTotal();
+    const cartId = cartItems[0].Cart.IdCart;
+
+    if (shipmentId === null) {
+      console.error("Shipment ID no está disponible.");
+      return;
+    }
+
+    navigate(`/payment/checkout/${option}`, {
+      state: { totalAmount, cartId, shipmentId, selection },
+    });
+};
+
+  // ---------------------------------- TOTAL
   const calculateTotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.Quantity * item.Product.Price,
@@ -462,7 +462,7 @@ export const Payment = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark focus:outline-none focus:bg-primary-dark"
+                className="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-[#f25e65] focus:outline-none focus:bg-primary-dark"
               >
                 Realizar pedido
               </button>

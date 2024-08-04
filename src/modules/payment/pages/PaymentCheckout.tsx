@@ -1,16 +1,106 @@
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import KRGlue from "@lyracom/embedded-form-glue";
+import Swal from "sweetalert2";
+
 import { getFormToken, validatePayment } from "../../../services/Payment";
+import { insertSale } from "../../../services/Sale";
+
+import { User } from "../../../types/User";
+
 
 export const PaymentCheckout = () => {
-  const { paymentOption } = useParams<{ paymentOption: string }>();
+  const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
-  const { totalAmount } = location.state as { totalAmount: number };
-  console.log(totalAmount);
+  const { paymentOption } = useParams<{ paymentOption: string }>();
+
+  const { totalAmount, cartId, shipmentId, seleccion } = location.state as {
+    totalAmount: number;
+    cartId: number;
+    shipmentId: number;
+    seleccion: string;
+  };
+
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [file, setFile] = useState<File | null>(null);
 
+  //---------------------------------------------------------------- GET USER LOCAL STORAGE
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  //---------------------------------- CHANGE FILE
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  //---------------------------------------------------------------- POST SALE
+  const handleFormSubmit = async () => {
+    if (paymentOption === "yape" && !file) {
+      Swal.fire({
+        title: "Archivo requerido",
+        text: "Por favor, sube el comprobante de pago.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("IdUser", user?.IdUser);
+      formData.append("IdCart", cartId.toString());
+      formData.append("idShipment", shipmentId.toString());
+      formData.append("Total", totalAmount.toString());
+
+      if (seleccion === "recoger") {
+        formData.append("ShippingMethod", "true");
+      } else {
+        formData.append("ShippingMethod", "false");
+      }
+
+      if (paymentOption === "izipay") {
+        formData.append("PaymentMethod", "true");
+        const cardNumber = "1234567890123456";
+        formData.append("CardNumber", cardNumber);
+      } else {
+        formData.append("PaymentMethod", "false");
+        if (file) {
+          formData.append("file", file);
+        }
+      }
+      const response = await insertSale(formData);
+      if (response.success) {
+        Swal.fire({
+          title: "Correcto!",
+          text: response.msg,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.msg,
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Opps, algo salió mal",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
+  //---------------------------------------------------------------- GET FORM IZIPAY
   useEffect(() => {
     const loadPaymentForm = async () => {
       if (paymentOption === "izipay") {
@@ -35,6 +125,7 @@ export const PaymentCheckout = () => {
             try {
               const response = await validatePayment(paymentData);
               if (response.status === 200) {
+                await handleFormSubmit();
                 setMessage("¡Pago exitoso!");
               }
             } catch (error) {
@@ -74,6 +165,22 @@ export const PaymentCheckout = () => {
               ) : (
                 <>
                   <div id="myPaymentForm"></div>
+                  <button
+                    className=" mt-3"
+                    style={{
+                      backgroundColor: "#c14851",
+                      width: "200px",
+                      color: "#fff",
+                      padding: "6px 10px",
+                      borderRadius: "5px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                      cursor: "pointer",
+                      transition: "background-color 0.3s, transform 0.3s",
+                    }}
+                    onClick={handleFormSubmit}
+                  >
+                    Enviar
+                  </button>
                   <div data-test="payment-message">{message}</div>
                 </>
               )}
@@ -99,6 +206,7 @@ export const PaymentCheckout = () => {
               <input
                 type="file"
                 className="block w-full border border-gray-300 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:border-gray-500"
+                onChange={handleFileChange}
               />
               <p className="text-sm text-gray-600">
                 Suba el comprobante de pago aquí.
@@ -115,9 +223,11 @@ export const PaymentCheckout = () => {
                   cursor: "pointer",
                   transition: "background-color 0.3s, transform 0.3s",
                 }}
+                onClick={handleFormSubmit}
               >
                 Enviar
               </button>
+              <div data-test="payment-message">{message}</div>
             </div>
           </div>
         )}

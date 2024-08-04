@@ -6,6 +6,7 @@ import {
   clearAllCartItems,
 } from "../services/Cart";
 import { User } from "../types/User";
+import Swal from "sweetalert2";
 
 interface CartItem {
   IdProduct: number;
@@ -95,8 +96,9 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       try {
         const response = await addToCartService(request);
         console.log(response.msg);
+        Swal.fire("Error", response.msg,"error");
       } catch (error) {
-        console.error("Error al actualizar el carrito:", error);
+        console.error("Error al actualizar el carrito:", "error");
       }
     }
   };
@@ -194,3 +196,4 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 export default CartProvider;
+  

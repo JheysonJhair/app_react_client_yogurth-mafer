@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BsPeople, BsClock, BsBox } from "react-icons/bs";
+
 import BackgroundImage from "../../../assets/img/fondo-about.jpg";
 import BackgroundImageAboutme from "../../../assets/img/aboutme.svg";
 
@@ -37,7 +38,6 @@ export const AboutUs = () => {
               que garantizan la frescura y el bienestar en cada envase.
             </p>
 
-            {/* Estadísticas */}
             <div className="flex flex-wrap mt-6">
               <div className="w-full md:w-1/2 lg:w-1/3 pr-2">
                 <div className="bg-[#FCDEDE] rounded-lg shadow-lg p-3 text-center">
@@ -88,7 +88,6 @@ export const AboutUs = () => {
             </p>
           </div>
         </div>
-        {/* Misión y Visión */}
       </section>
     </>
   );

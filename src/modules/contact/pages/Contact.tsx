@@ -8,7 +8,7 @@ export const Contact = () => {
 
   const [errorInput, setErrorInput] = useState(false);
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
 
     if ([name, lastName, email, message].includes("")) {
@@ -30,7 +30,10 @@ export const Contact = () => {
           </div>
         )}
         <div className="text-center mb-10">
-          <h3 className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight text-white" style={{ color: '#373739' }}>
+          <h3
+            className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight text-white"
+            style={{ color: "#373739" }}
+          >
             Contá<span className="text-primary">ctanos</span>
           </h3>
         </div>
@@ -98,7 +101,6 @@ export const Contact = () => {
                 Mensaje:
               </label>
               <textarea
-
                 className="appearance-none block w-full bg-gray-200text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 placeholder="Ingrese su mensaje"
                 value={message}

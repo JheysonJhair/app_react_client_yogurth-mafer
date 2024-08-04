@@ -1,38 +1,32 @@
-// api.ts
-import {
-  ShipmentData,
-  LastShipmentResponse,
-  Shipment,
-} from "../types/Shipment";
-
-export const insertShipment = async (data: ShipmentData): Promise<void> => {
-  const response = await fetch(
-    "https://bkmaferyogurt-production.up.railway.app/api/shipment/insert",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Error al insertar el envío");
+export const fetchLastShipment = async (userId: number) => {
+  try {
+    const response = await fetch(
+      `https://bkmaferyogurt-production.up.railway.app/api/shipment/lastShipment/${userId}`
+    );
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el último envío:", error);
+    throw error;
   }
 };
 
-export const getLastShipment = async (
-  userId: string
-): Promise<Shipment | null> => {
-  const response = await fetch(
-    `https://bkmaferyogurt-production.up.railway.app/api/shipment/lastShipment/${userId}`
-  );
-
-  if (!response.ok) {
-    throw new Error("Error al obtener el último envío");
+export const insertShipment = async (shipmentData: any) => {
+  try {
+    const response = await fetch(
+      "https://bkmaferyogurt-production.up.railway.app/api/shipment/insert",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(shipmentData),
+      }
+    );
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al realizar el pedido:", error);
+    throw error;
   }
-
-  const data: LastShipmentResponse = await response.json();
-  return data.success && data.data.length > 0 ? data.data[0] : null;
 };

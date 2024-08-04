@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 import { Home } from "../pages/Home";
 import { Products } from "../modules/Product/pages/Products";
 import { AboutUs } from "../modules/about-us/pages/AboutUs";
-import { Blog } from "../modules/bloc/pages/Blog";
 import { Contact } from "../modules/contact/pages/Contact";
 import { ProductDetails } from "../modules/Product/pages/ProductDetails";
 import { Payment } from "../modules/payment/pages/Payment";
@@ -37,10 +36,6 @@ const appRouter = [
       {
         path: "/payment/checkout/:paymentOption",
         element: <PaymentCheckout />,
-      },
-      {
-        path: "/blog",
-        element: <Blog />,
       },
       {
         path: "/contact",

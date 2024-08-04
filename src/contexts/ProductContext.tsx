@@ -1,8 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { fetchProducts } from "../services/Product";
 
-
-
 interface Product {
   IdProduct: number;
   Name: string;
@@ -16,7 +14,9 @@ interface ProductContextType {
   products: Product[];
 }
 
-export const ProductContext = createContext<ProductContextType | undefined>(undefined);
+export const ProductContext = createContext<ProductContextType | undefined>(
+  undefined
+);
 
 const ProductProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,5 +41,3 @@ const ProductProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 export default ProductProvider;
-
-

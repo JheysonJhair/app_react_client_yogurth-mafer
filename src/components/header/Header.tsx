@@ -1,34 +1,53 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { BsBag } from "react-icons/bs";
 import Swal from "sweetalert2";
+
 import { SidebarContext } from "../../contexts/SidebarContext";
 import { CartContext } from "../../contexts/CartContext";
 import { Navbar } from "./NavBar";
-import { BsBag } from "react-icons/bs";
-import Logo from "../../assets/img/logo.png";
+
 import { Login, User } from "../../types/User";
 import { login } from "../../services/Login";
 import { registerUser } from "../../services/Usuario";
 
+import {
+  validateRequiredField,
+  validateDNI,
+  validateEmail,
+  validatePhoneNumber,
+  validatePassword,
+} from "../../utils/validations";
+
+import Logo from "../../assets/img/logo.png";
+
 export const Header: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+
   const [isActive, setIsActive] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"login" | "register">("login");
+
   const [formData, setFormData] = useState<any>({});
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
   const { isOpen, setIsOpen } = useContext(SidebarContext)!;
   const { itemAmount } = useContext(CartContext)!;
 
+  //---------------------------------------------------------------- GET USER LOCAL STORAGE
   useEffect(() => {
+    //localStorage.clear();
+
     const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
   }, []);
 
+  //---------------------------------------------------------------- SCROLL
   useEffect(() => {
     const handleScroll = () => {
       window.scrollY > 60 ? setIsActive(true) : setIsActive(false);
@@ -40,13 +59,14 @@ export const Header: React.FC = () => {
     };
   }, []);
 
+  //----------------------- LOGIN? REGISTER?
   const handleShowModal = (type: "login" | "register") => {
     setModalType(type);
     setShowModal(true);
   };
-
   const handleCloseModal = () => setShowModal(false);
 
+  //----------------------- CHANGE INPUT
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -54,17 +74,64 @@ export const Header: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  //----------------------- VALIDATE FORM
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    const requiredFields = ["email", "password"];
+
+    if (modalType === "register") {
+      requiredFields.push(
+        "firstName",
+        "lastName",
+        "dni",
+        "address",
+        "phone",
+        "repeatPassword"
+      );
+    }
+
+    requiredFields.forEach((field) => {
+      const error = validateRequiredField(formData[field]);
+      if (error) newErrors[field] = error;
+    });
+
+    if (formData.email) {
+      const emailError = validateEmail(formData.email);
+      if (emailError) newErrors.email = emailError;
+    }
+
+    if (formData.dni) {
+      const dniError = validateDNI(formData.dni);
+      if (dniError) newErrors.dni = dniError;
+    }
+
+    if (formData.phone) {
+      const phoneError = validatePhoneNumber(formData.phone);
+      if (phoneError) newErrors.phone = phoneError;
+    }
+
+    if (formData.password) {
+      const passwordError = validatePassword(formData.password);
+      if (passwordError) newErrors.password = passwordError;
+    }
 
     if (
       modalType === "register" &&
       formData.password !== formData.repeatPassword
     ) {
-      setError("Passwords do not match.");
-      return;
+      newErrors.repeatPassword = "Las contraseñas no coinciden.";
     }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  //---------------------------------------------------------------- SUBMIT
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    if (!validateForm()) return;
 
     try {
       let response;
@@ -125,10 +192,16 @@ export const Header: React.FC = () => {
         }
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      Swal.fire({
+        title: "Error!",
+        text: "Opps, algo salió mal",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     }
   };
 
+  //---------------------------------------------------------------- LOGOUT - DELETE LS
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -142,7 +215,6 @@ export const Header: React.FC = () => {
   };
 
   const shouldShowNavMenu = user?.FirstName;
-
   return (
     <>
       <header
@@ -220,27 +292,28 @@ export const Header: React.FC = () => {
                   Iniciar sesión
                 </button>
                 <button
-                  className="bg-primary text-white px-4 py-1 rounded-md font-bold uppercase hover:bg-[#bf5f65] transition duration-300"
+                  className="bg-primary text-white px-4 py-1 rounded-md font-bold uppercase hover:bg-[#8f7f7f] transition duration-300"
                   onClick={() => handleShowModal("register")}
                 >
-                  Registrarse
+                  Regístrate
                 </button>
               </div>
             )}
           </div>
         </div>
       </header>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className={"bg-white min-w-96 mx-4 rounded-lg shadow-lg "}>
-            <div className="p-4">
+            <div className="p-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
-                  {modalType === "login" ? "Login" : "Register"}
+                  {modalType === "login"
+                    ? "Iniciar sesión"
+                    : "Registrar usuario"}
                 </h2>
                 <button
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-800 hover:text-gray-500"
                   onClick={handleCloseModal}
                 >
                   &times;
@@ -250,8 +323,8 @@ export const Header: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {modalType === "login" ? (
                     <>
-                      <div className="grid grid-cols-1 gap-6">
-                        <div className="mb-4">
+                      <div className="grid grid-cols-1 gap-4">
+                        <div>
                           <label
                             htmlFor="email"
                             className="block text-gray-700"
@@ -265,10 +338,12 @@ export const Header: React.FC = () => {
                             placeholder="Ingresa tu correo electrónico"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                             onChange={handleChange}
-                            required
                           />
+                          {errors.email && (
+                            <p className="  text-red-500">{errors.email}</p>
+                          )}
                         </div>
-                        <div className="mb-4">
+                        <div>
                           <label
                             htmlFor="password"
                             className="block text-gray-700"
@@ -282,14 +357,22 @@ export const Header: React.FC = () => {
                             placeholder="Ingresa tu contraseña"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                             onChange={handleChange}
-                            required
                           />
+                          {errors.password && (
+                            <p className="text-red-500">{errors.password}</p>
+                          )}
                         </div>
+                        <a
+                          onClick={() => handleShowModal("register")}
+                          className=" cursor-pointer text-[#1B1B1C]"
+                        >
+                          ¿No tienes cuenta? Regístrate
+                        </a>
                       </div>
                     </>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="mb-4">
+                      <div>
                         <label
                           htmlFor="firstName"
                           className="block text-gray-700"
@@ -303,10 +386,12 @@ export const Header: React.FC = () => {
                           placeholder="Ingresa tu nombre"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+                        {errors.firstName && (
+                          <p className="text-red-500">{errors.firstName}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label
                           htmlFor="lastName"
                           className="block text-gray-700"
@@ -320,10 +405,12 @@ export const Header: React.FC = () => {
                           placeholder="Ingresa tu apellido"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+                        {errors.lastName && (
+                          <p className="text-red-500">{errors.lastName}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label htmlFor="dni" className="block text-gray-700">
                           DNI
                         </label>
@@ -334,10 +421,12 @@ export const Header: React.FC = () => {
                           placeholder="Ingresa tu DNI"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+                        {errors.dni && (
+                          <p className="text-red-500">{errors.dni}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label
                           htmlFor="address"
                           className="block text-gray-700"
@@ -352,8 +441,11 @@ export const Header: React.FC = () => {
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
                         />
+                        {errors.address && (
+                          <p className="text-red-500">{errors.address}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label htmlFor="phone" className="block text-gray-700">
                           Teléfono
                         </label>
@@ -365,8 +457,11 @@ export const Header: React.FC = () => {
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
                         />
+                        {errors.phone && (
+                          <p className="text-red-500">{errors.phone}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label htmlFor="email" className="block text-gray-700">
                           Correo electrónico
                         </label>
@@ -377,10 +472,12 @@ export const Header: React.FC = () => {
                           placeholder="Ingresa tu correo "
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+                        {errors.email && (
+                          <p className="text-red-500">{errors.email}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label
                           htmlFor="password"
                           className="block text-gray-700"
@@ -394,10 +491,12 @@ export const Header: React.FC = () => {
                           placeholder="Ingresa tu contraseña"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+                        {errors.password && (
+                          <p className="text-red-500">{errors.password}</p>
+                        )}
                       </div>
-                      <div className="mb-4">
+                      <div>
                         <label
                           htmlFor="repeatPassword"
                           className="block text-gray-700"
@@ -411,12 +510,23 @@ export const Header: React.FC = () => {
                           placeholder="Repite tu contraseña"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
-                          required
                         />
+
+                        {errors.repeatPassword && (
+                          <p className="text-red-500">
+                            {errors.repeatPassword}
+                          </p>
+                        )}
                       </div>
+                      <a
+                        onClick={() => handleShowModal("login")}
+                        className="text-[#1B1B1C] cursor-pointer"
+                      >
+                        ¿Ya tienes cuenta? Iniciar sesión
+                      </a>
                     </div>
                   )}
-                  {error && <p className="text-red-500">{error}</p>}
+
                   <div className="flex justify-end mt-4">
                     <button
                       type="submit"

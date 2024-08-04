@@ -5,7 +5,6 @@ export const Hero = () => {
     <>
       <section className="h-[640px] bg-hero bg-no-repeat bg-center bg-cover py-24 mt-20">
         <div className="container mx-auto flex justify-around h-full">
-          {/* texto */}
           <div className="flex flex-col ">
             <div className="font-semibold flex items-center uppercase text-[#25a25d]">
               <div className="w-10 h-[3px] bg-[#25a25d] mr-3"></div>Come rico y
@@ -22,7 +21,6 @@ export const Hero = () => {
               Descubrir más
             </Link>
           </div>
-          {/* imagen */}
           <div className="hidden lg:block lg:w-1/2 lg:mr-20"></div>
         </div>
       </section>
