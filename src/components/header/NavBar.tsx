@@ -25,6 +25,7 @@ export const Navbar = () => {
         onClick={(e) => {
           e.preventDefault();
           handleNavigation("/");
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
         Inicio
@@ -36,6 +37,11 @@ export const Navbar = () => {
             : "text-black"
         } hover:text-[#c04751] transition`}
         to={"/about-us"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation("/about-us");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       >
         Nosotros
       </Link>
@@ -46,6 +52,11 @@ export const Navbar = () => {
             : "text-black"
         } hover:text-[#c04751] transition`}
         to={"/products"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation("/products");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       >
         Productos
       </Link>
@@ -56,6 +67,11 @@ export const Navbar = () => {
             : "text-black"
         } hover:text-[#c04751] transition`}
         to={"/contact"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation("/contact");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       >
         Contáctanos
       </Link>

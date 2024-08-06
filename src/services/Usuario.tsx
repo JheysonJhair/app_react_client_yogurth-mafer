@@ -1,3 +1,4 @@
+import axios from "axios";
 import { User } from "../types/User";
 
 interface ApiResponse {
@@ -25,6 +26,41 @@ export async function obtenerUsuarios(): Promise<User[]> {
     return [];
   }
 }
+
+
+//---------------------------------------------------------------- VERIFICATE MAIL -  VERIFICATE CODE => USER
+
+export const sendVerificationEmail = async (email: string) => {
+  try {
+    const response = await fetch(`${API_URL}/mailValidation?email=${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("API: Error al enviar la verificación de email");
+    }
+    return response;
+  } catch (error) {
+    console.error("API: Error al enviar la verificación de email", error);
+    throw error;
+  }
+};
+
+export const verifyCode = async (Email: string, Code: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/user/validate`, {
+      Email,
+      Code,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("API: Error al verificar el código", error);
+    throw error;
+  }
+};
 
 //---------------------------------------------------------------- POST USER
 export async function registerUser(

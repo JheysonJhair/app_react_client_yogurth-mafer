@@ -115,14 +115,14 @@ export const Sidebar: React.FC = () => {
         </div>
         <button
           onClick={handlePayment}
-          className="bg-[#373739] flex p-4 justify-center items-center text-white w-full font-medium"
+          className="bg-[#373739]  hover:bg-[#5c5c5f] flex p-4 justify-center items-center text-white w-full font-medium"
         >
           Empezar a pagar
         </button>
 
         <a
           onClick={handleClose}
-          className="bg-primary cursor-pointer flex p-4 justify-center items-center text-white w-full font-medium"
+          className="bg-primary  hover:bg-[#f25e65] cursor-pointer flex p-4 justify-center items-center text-white w-full font-medium"
         >
           Cancelar
         </a>

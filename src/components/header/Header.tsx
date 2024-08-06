@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
 import { BsBag } from "react-icons/bs";
 import Swal from "sweetalert2";
 
@@ -10,7 +9,11 @@ import { Navbar } from "./NavBar";
 
 import { Login, User } from "../../types/User";
 import { login } from "../../services/Login";
-import { registerUser } from "../../services/Usuario";
+import {
+  registerUser,
+  sendVerificationEmail,
+  verifyCode,
+} from "../../services/Usuario";
 
 import {
   validateRequiredField,
@@ -34,13 +37,13 @@ export const Header: React.FC = () => {
 
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
+  const [step, setStep] = useState<number>(0);
+
   const { isOpen, setIsOpen } = useContext(SidebarContext)!;
   const { itemAmount } = useContext(CartContext)!;
 
   //---------------------------------------------------------------- GET USER LOCAL STORAGE
   useEffect(() => {
-    //localStorage.clear();
-
     const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
@@ -63,7 +66,9 @@ export const Header: React.FC = () => {
   const handleShowModal = (type: "login" | "register") => {
     setModalType(type);
     setShowModal(true);
+    setStep(type === "register" ? 0 : 2); // Start from step 0 for registration
   };
+
   const handleCloseModal = () => setShowModal(false);
 
   //----------------------- CHANGE INPUT
@@ -214,6 +219,85 @@ export const Header: React.FC = () => {
     });
   };
 
+  //---------------------------------------------------------------- POST SEND MAIL
+  const handleSendEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailError = validateEmail(formData.email);
+    if (!formData.email) {
+      Swal.fire({
+        title: "Campo requerido!",
+        text: "Ingrese el código de verificación",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+    if (emailError) {
+      setErrors({ email: emailError });
+      return;
+    }
+    setErrors({});
+    try {
+      await sendVerificationEmail(formData.email);
+      Swal.fire({
+        title: "Correo Enviado!",
+        text: "Hemos enviado un código de verificación a su correo.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+      setStep(1);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Opps, algo salió mal",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
+  //---------------------------------------------------------------- POST VERIFICATE CODE
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.code) {
+      Swal.fire({
+        title: "Campo requerido!",
+        text: "Ingrese el código de verificación",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+    setErrors({});
+    try {
+      const response = await verifyCode(formData.email, formData.code);
+      if (response.success) {
+        Swal.fire({
+          title: "Éxito!",
+          text: "Correo verificado.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+          setStep(2);
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.msg,
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Opps, algo salió mal",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
   const shouldShowNavMenu = user?.FirstName;
   return (
     <>
@@ -286,13 +370,13 @@ export const Header: React.FC = () => {
             ) : (
               <div className="flex gap-4">
                 <button
-                  className="border-2 border-primary text-primary px-4 py-1 rounded-md font-bold uppercase hover:bg-[#bf5f65] hover:text-white transition duration-300"
+                  className="border-2 border-primary text-primary px-4 py-1 rounded-md font-bold uppercase hover:bg-[#c34e54] hover:text-white transition duration-300"
                   onClick={() => handleShowModal("login")}
                 >
                   Iniciar sesión
                 </button>
                 <button
-                  className="bg-primary text-white px-4 py-1 rounded-md font-bold uppercase hover:bg-[#8f7f7f] transition duration-300"
+                  className="bg-primary text-white px-4 py-1 rounded-md font-bold uppercase hover:bg-[#f25e65] transition duration-300"
                   onClick={() => handleShowModal("register")}
                 >
                   Regístrate
@@ -320,147 +404,9 @@ export const Header: React.FC = () => {
                 </button>
               </div>
               <div className="mt-4">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {modalType === "login" ? (
-                    <>
-                      <div className="grid grid-cols-1 gap-4">
-                        <div>
-                          <label
-                            htmlFor="email"
-                            className="block text-gray-700"
-                          >
-                            Correo electrónico
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Ingresa tu correo electrónico"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                            onChange={handleChange}
-                          />
-                          {errors.email && (
-                            <p className="  text-red-500">{errors.email}</p>
-                          )}
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="password"
-                            className="block text-gray-700"
-                          >
-                            Contraseña
-                          </label>
-                          <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Ingresa tu contraseña"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                            onChange={handleChange}
-                          />
-                          {errors.password && (
-                            <p className="text-red-500">{errors.password}</p>
-                          )}
-                        </div>
-                        <a
-                          onClick={() => handleShowModal("register")}
-                          className=" cursor-pointer text-[#1B1B1C]"
-                        >
-                          ¿No tienes cuenta? Regístrate
-                        </a>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label
-                          htmlFor="firstName"
-                          className="block text-gray-700"
-                        >
-                          Nombre
-                        </label>
-                        <input
-                          type="text"
-                          id="firstName"
-                          name="firstName"
-                          placeholder="Ingresa tu nombre"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-                        {errors.firstName && (
-                          <p className="text-red-500">{errors.firstName}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="lastName"
-                          className="block text-gray-700"
-                        >
-                          Apellido
-                        </label>
-                        <input
-                          type="text"
-                          id="lastName"
-                          name="lastName"
-                          placeholder="Ingresa tu apellido"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-                        {errors.lastName && (
-                          <p className="text-red-500">{errors.lastName}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="dni" className="block text-gray-700">
-                          DNI
-                        </label>
-                        <input
-                          type="text"
-                          id="dni"
-                          name="dni"
-                          placeholder="Ingresa tu DNI"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-                        {errors.dni && (
-                          <p className="text-red-500">{errors.dni}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="block text-gray-700"
-                        >
-                          Dirección
-                        </label>
-                        <input
-                          type="text"
-                          id="address"
-                          name="address"
-                          placeholder="Ingresa tu dirección"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-                        {errors.address && (
-                          <p className="text-red-500">{errors.address}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="phone" className="block text-gray-700">
-                          Teléfono
-                        </label>
-                        <input
-                          type="text"
-                          id="phone"
-                          name="phone"
-                          placeholder="Ingresa tu teléfono"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-                        {errors.phone && (
-                          <p className="text-red-500">{errors.phone}</p>
-                        )}
-                      </div>
+                {modalType === "login" ? (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4">
                       <div>
                         <label htmlFor="email" className="block text-gray-700">
                           Correo electrónico
@@ -469,12 +415,12 @@ export const Header: React.FC = () => {
                           type="email"
                           id="email"
                           name="email"
-                          placeholder="Ingresa tu correo "
+                          placeholder="Ingresa tu correo electrónico"
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                           onChange={handleChange}
                         />
                         {errors.email && (
-                          <p className="text-red-500">{errors.email}</p>
+                          <p className="  text-red-500">{errors.email}</p>
                         )}
                       </div>
                       <div>
@@ -496,46 +442,265 @@ export const Header: React.FC = () => {
                           <p className="text-red-500">{errors.password}</p>
                         )}
                       </div>
-                      <div>
-                        <label
-                          htmlFor="repeatPassword"
-                          className="block text-gray-700"
-                        >
-                          Repetir Contraseña
-                        </label>
-                        <input
-                          type="password"
-                          id="repeatPassword"
-                          name="repeatPassword"
-                          placeholder="Repite tu contraseña"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                          onChange={handleChange}
-                        />
-
-                        {errors.repeatPassword && (
-                          <p className="text-red-500">
-                            {errors.repeatPassword}
-                          </p>
-                        )}
-                      </div>
                       <a
-                        onClick={() => handleShowModal("login")}
-                        className="text-[#1B1B1C] cursor-pointer"
+                        onClick={() => handleShowModal("register")}
+                        className=" cursor-pointer text-[#1B1B1C]"
                       >
-                        ¿Ya tienes cuenta? Iniciar sesión
+                        ¿No tienes cuenta? Regístrate
                       </a>
                     </div>
-                  )}
+                    <div className="flex justify-end mt-4">
+                      <button
+                        type="submit"
+                        className="bg-primary  hover:bg-[#f25e65] text-white px-4 py-2 rounded-md"
+                      >
+                        Iniciar sesión
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    {step === 0 && (
+                      <form onSubmit={handleSendEmail}>
+                        <div className="mb-3">
+                          <label
+                            htmlFor="email"
+                            className="block text-gray-700"
+                          >
+                            Correo electrónico
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Ingresa tu correo electrónico"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                            value={formData.email || ""}
+                            onChange={handleChange}
+                          />
+                          {errors.email && (
+                            <p className="  text-red-500">{errors.email}</p>
+                          )}
+                        </div>
 
-                  <div className="flex justify-end mt-4">
-                    <button
-                      type="submit"
-                      className="bg-primary text-white px-4 py-2 rounded-md"
-                    >
-                      {modalType === "login" ? "Iniciar sesión" : "Registrarse"}
-                    </button>
-                  </div>
-                </form>
+                        <div className="flex items-center justify-between">
+                          <button
+                            className="bg-primary  hover:bg-[#f25e65] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                          >
+                            Recibir Código
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                    {step === 1 && (
+                      <form onSubmit={handleVerifyCode}>
+                        <div className="mb-3">
+                          <label htmlFor="code" className="block text-gray-700">
+                            Código de Verificación
+                          </label>
+                          <input
+                            maxLength={6}
+                            id="code"
+                            type="text"
+                            name="code"
+                            placeholder="000000"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                            value={formData.code || ""}
+                            onChange={handleChange}
+                          />
+                          {errors.code && (
+                            <p className="  text-red-500">{errors.code}</p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <button
+                            className="bg-primary  hover:bg-[#f25e65] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                          >
+                            Verificar Código
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                    {step === 2 && (
+                      <form onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label
+                              htmlFor="firstName"
+                              className="block text-gray-700"
+                            >
+                              Nombre
+                            </label>
+                            <input
+                              type="text"
+                              id="firstName"
+                              name="firstName"
+                              placeholder="Ingresa tu nombre"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.firstName && (
+                              <p className="text-red-500">{errors.firstName}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="lastName"
+                              className="block text-gray-700"
+                            >
+                              Apellido
+                            </label>
+                            <input
+                              type="text"
+                              id="lastName"
+                              name="lastName"
+                              placeholder="Ingresa tu apellido"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.lastName && (
+                              <p className="text-red-500">{errors.lastName}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="dni"
+                              className="block text-gray-700"
+                            >
+                              DNI
+                            </label>
+                            <input
+                              type="text"
+                              id="dni"
+                              name="dni"
+                              placeholder="Ingresa tu DNI"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.dni && (
+                              <p className="text-red-500">{errors.dni}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="address"
+                              className="block text-gray-700"
+                            >
+                              Dirección
+                            </label>
+                            <input
+                              type="text"
+                              id="address"
+                              name="address"
+                              placeholder="Ingresa tu dirección"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.address && (
+                              <p className="text-red-500">{errors.address}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="phone"
+                              className="block text-gray-700"
+                            >
+                              Teléfono
+                            </label>
+                            <input
+                              type="text"
+                              id="phone"
+                              name="phone"
+                              placeholder="Ingresa tu teléfono"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.phone && (
+                              <p className="text-red-500">{errors.phone}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="email"
+                              className="block text-gray-700"
+                            >
+                              Correo electrónico
+                            </label>
+                            <input
+                              type="email"
+                              id="email"
+                              name="email"
+                              placeholder="Ingresa tu correo "
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.email && (
+                              <p className="text-red-500">{errors.email}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="password"
+                              className="block text-gray-700"
+                            >
+                              Contraseña
+                            </label>
+                            <input
+                              type="password"
+                              id="password"
+                              name="password"
+                              placeholder="Ingresa tu contraseña"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+                            {errors.password && (
+                              <p className="text-red-500">{errors.password}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="repeatPassword"
+                              className="block text-gray-700"
+                            >
+                              Repetir Contraseña
+                            </label>
+                            <input
+                              type="password"
+                              id="repeatPassword"
+                              name="repeatPassword"
+                              placeholder="Repite tu contraseña"
+                              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                              onChange={handleChange}
+                            />
+
+                            {errors.repeatPassword && (
+                              <p className="text-red-500">
+                                {errors.repeatPassword}
+                              </p>
+                            )}
+                          </div>
+                          <a
+                            onClick={() => handleShowModal("login")}
+                            className="text-[#1B1B1C] cursor-pointer"
+                          >
+                            ¿Ya tienes cuenta? Iniciar sesión
+                          </a>
+                        </div>
+                        <div className="flex justify-end mt-4">
+                          <button
+                            type="submit"
+                            className="bg-primary  hover:bg-[#f25e65]  text-white px-4 py-2 rounded-md"
+                          >
+                            Registrarse
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>

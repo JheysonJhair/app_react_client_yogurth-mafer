@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { BsPeople, BsClock, BsBox } from "react-icons/bs";
-
 import BackgroundImage from "../../../assets/img/fondo-about.jpg";
 import BackgroundImageAboutme from "../../../assets/img/aboutme.svg";
 
@@ -12,10 +11,10 @@ export const AboutUs = () => {
   return (
     <>
       <div
-        className="relative w-full h-screen-20 bg-cover bg-center"
-        style={{ backgroundImage: `url(${BackgroundImage})` }}
+        className="relative w-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${BackgroundImage})` , height:"500px"}}
       >
-        <div className="absolute inset-0 opacity-50"></div>
+        <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
 
       <section className="text-justify max-w-7xl mx-auto mt-12 py-0 px-5">
@@ -23,7 +22,7 @@ export const AboutUs = () => {
           <img className="md:w-1/2" src={BackgroundImageAboutme} alt="Imagen" />
           <div className="md:w-1/2 pt-4">
             <h2 className="text-4xl mb-3 font-bold text-primary uppercase">
-              ¿Quienes somos?
+              ¿Quiénes somos?
             </h2>
             <p className="text-black">
               Mafer es una empresa dedicada a ofrecer yogurths de alta calidad,
@@ -38,6 +37,7 @@ export const AboutUs = () => {
               que garantizan la frescura y el bienestar en cada envase.
             </p>
 
+            {/* Estadísticas */}
             <div className="flex flex-wrap mt-6">
               <div className="w-full md:w-1/2 lg:w-1/3 pr-2">
                 <div className="bg-[#FCDEDE] rounded-lg shadow-lg p-3 text-center">
@@ -88,6 +88,7 @@ export const AboutUs = () => {
             </p>
           </div>
         </div>
+        {/* Misión y Visión */}
       </section>
     </>
   );
