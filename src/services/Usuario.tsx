@@ -27,7 +27,6 @@ export async function obtenerUsuarios(): Promise<User[]> {
   }
 }
 
-
 //---------------------------------------------------------------- VERIFICATE MAIL -  VERIFICATE CODE => USER
 
 export const sendVerificationEmail = async (email: string) => {
@@ -77,7 +76,8 @@ export async function registerUser(
     if (!response.ok) {
       throw new Error("API: Error al crear el usuario");
     }
-    const responseData: { msg: string; success: boolean } = await response.json();
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
     return responseData;
   } catch (error) {
     throw new Error(`API: Error al crear el usuario: ${error}`);
@@ -98,6 +98,30 @@ export async function actualizarUsuario(usuario: Partial<User>): Promise<void> {
     if (!response.ok) {
       throw new Error("API: Error al actualizar el usuario");
     }
+  } catch (error) {
+    throw new Error(`API: Error al actualizar el usuario: ${error}`);
+  }
+}
+
+//---------------------------------------------------------------- PUT USER PASSWORD
+export async function updatePasswordUser(
+  usuario: any
+): Promise<{ msg: string; success: boolean }> {
+  try {
+    const url = `${API_URL}/user/PasswordUpdate`;
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(usuario),
+    });
+    if (!response.ok) {
+      throw new Error("API: Error al actualizar el usuario");
+    }
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
+    return responseData;
   } catch (error) {
     throw new Error(`API: Error al actualizar el usuario: ${error}`);
   }

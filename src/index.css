@@ -22,3 +22,11 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.btn-disabled {
+  background-color: #885c5c; 
+  color: #a0a0a0; 
+  cursor: not-allowed; 
+  border: 1px solid #ccc; 
+  box-shadow: none; 
+}

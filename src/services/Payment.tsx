@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:3000/api";
+const apiUrl = "https://backenizipay-production.up.railway.app/api";
 
 export const getFormToken = async (paymentConf: {
   amount: number;

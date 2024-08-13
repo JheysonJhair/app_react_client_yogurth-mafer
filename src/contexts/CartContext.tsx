@@ -95,8 +95,15 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       try {
         const response = await addToCartService(request);
-        console.log(response.msg);
-        Swal.fire("Error", response.msg,"error");
+        if(response.success) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: response.msg,
+            showConfirmButton: false,
+            timer: 600
+          });
+        }
       } catch (error) {
         console.error("Error al actualizar el carrito:", "error");
       }

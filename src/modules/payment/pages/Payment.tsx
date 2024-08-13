@@ -136,7 +136,15 @@ export const Payment = () => {
     try {
       const result = await insertShipment(shipmentData);
       if (result.success) {
-        handleShowModal();
+        loadLastShipment(user?.IdUser);
+        Swal.fire({
+          title: "Correcto!",
+          text: "Datos guardados exitosamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+          handleShowModal();
+        });
       } else {
         console.error("Error al realizar el pedido:", result.msg);
       }
@@ -145,20 +153,25 @@ export const Payment = () => {
     }
   };
 
-  //---------------------------------- OPTION PAYMENT
-  const handlePaymentOption = (option: string) => {
-    handleCloseModal();
-    const totalAmount = calculateTotal();
-    const cartId = cartItems[0].Cart.IdCart;
+//---------------------------------- OPTION PAYMENT
+const handlePaymentOption = (option: string) => {
+  handleCloseModal();
+  const totalAmount = calculateTotal();
+  const cartId = cartItems[0].Cart.IdCart;
 
-    if (shipmentId === null) {
-      console.error("Shipment ID no está disponible.");
-      return;
-    }
+  if (shipmentId === null) {
+    console.error("Shipment ID no está disponible.");
+    return;
+  }
 
-    navigate(`/payment/checkout/${option}`, {
-      state: { totalAmount, cartId, shipmentId, selection },
-    });
+  if (user?.IdUser === undefined) {
+    console.error("User ID no está disponible.");
+    return;
+  }
+
+  navigate(`/payment/checkout/${option}`, {
+    state: { totalAmount, cartId, shipmentId, selection, userId: user.IdUser },
+  });
 };
 
   // ---------------------------------- TOTAL

@@ -6,32 +6,22 @@ import Swal from "sweetalert2";
 import { getFormToken, validatePayment } from "../../../services/Payment";
 import { insertSale } from "../../../services/Sale";
 
-import { User } from "../../../types/User";
-
-
 export const PaymentCheckout = () => {
-  const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
   const { paymentOption } = useParams<{ paymentOption: string }>();
 
-  const { totalAmount, cartId, shipmentId, seleccion } = location.state as {
-    totalAmount: number;
-    cartId: number;
-    shipmentId: number;
-    seleccion: string;
-  };
+  const { totalAmount, cartId, shipmentId, seleccion, userId } =
+    location.state as {
+      totalAmount: number;
+      cartId: number;
+      shipmentId: number;
+      seleccion: string;
+      userId: any;
+    };
 
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [file, setFile] = useState<File | null>(null);
-
-  //---------------------------------------------------------------- GET USER LOCAL STORAGE
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   //---------------------------------- CHANGE FILE
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +43,7 @@ export const PaymentCheckout = () => {
     }
     try {
       const formData = new FormData();
-      formData.append("IdUser", user?.IdUser);
+      formData.append("IdUser", userId.toString());
       formData.append("IdCart", cartId.toString());
       formData.append("idShipment", shipmentId.toString());
       formData.append("Total", totalAmount.toString());
@@ -66,7 +56,7 @@ export const PaymentCheckout = () => {
 
       if (paymentOption === "izipay") {
         formData.append("PaymentMethod", "true");
-        const cardNumber = "1234567890123456";
+        const cardNumber = "000000000000";
         formData.append("CardNumber", cardNumber);
       } else {
         formData.append("PaymentMethod", "false");
@@ -75,12 +65,26 @@ export const PaymentCheckout = () => {
         }
       }
       const response = await insertSale(formData);
+      console.log(response);
       if (response.success) {
         Swal.fire({
-          title: "Correcto!",
-          text: response.msg,
-          icon: "success",
-          confirmButtonText: "Aceptar",
+          title: "<strong>Compra exitosa!</strong>",
+          icon: "info",
+          html: `
+              Puedes verificar tu compra realizada a travez de tu  <b>Gmail</b>.<br>
+            
+            
+            <b>Cualquier notificación se te estará enviando a tu correo electrónico.</b> 
+          `,
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          confirmButtonText: `
+            <i class="fa fa-thumbs-up"></i> ¡Entendido!
+          `,
+          confirmButtonAriaLabel: "Thumbs up, great!",
+        }).then(() => {
+          window.location.href = "/";
         });
       } else {
         Swal.fire({
@@ -165,22 +169,6 @@ export const PaymentCheckout = () => {
               ) : (
                 <>
                   <div id="myPaymentForm"></div>
-                  <button
-                    className=" mt-3"
-                    style={{
-                      backgroundColor: "#c14851",
-                      width: "200px",
-                      color: "#fff",
-                      padding: "6px 10px",
-                      borderRadius: "5px",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s, transform 0.3s",
-                    }}
-                    onClick={handleFormSubmit}
-                  >
-                    Enviar
-                  </button>
                   <div data-test="payment-message">{message}</div>
                 </>
               )}
