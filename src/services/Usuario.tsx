@@ -108,7 +108,7 @@ export async function updatePasswordUser(
   usuario: any
 ): Promise<{ msg: string; success: boolean }> {
   try {
-    const url = `${API_URL}/user/PasswordUpdate`;
+    const url = `${API_URL}/user/recoverPassword`;
     const response = await fetch(url, {
       method: "PUT",
       headers: {

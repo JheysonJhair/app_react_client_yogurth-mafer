@@ -273,6 +273,7 @@ export const Header: React.FC = () => {
     }
     setErrors({});
     try {
+      console.log(formData.email);
       await sendVerificationEmail(formData.email);
       Swal.fire({
         title: "Correo Enviado!",
