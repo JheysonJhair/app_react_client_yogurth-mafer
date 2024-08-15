@@ -153,7 +153,8 @@ export const Header: React.FC = () => {
           Password: formData.password!,
         };
         response = await login(loginData);
-        if (response.success) {
+        console.log(response.data.Rol)
+        if (response.success && response.data.Rol == 0) {
           localStorage.setItem("user", JSON.stringify(response.data));
           Swal.fire({
             title: "Correcto!",
@@ -167,7 +168,7 @@ export const Header: React.FC = () => {
         } else {
           Swal.fire({
             title: "Error!",
-            text: response.msg,
+            text: "Opps, regístrate para cotninuar!",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
