@@ -1,11 +1,5 @@
 import axios from "axios";
-import { User } from "../types/User";
-
-interface ApiResponse {
-  msg: string;
-  success: boolean;
-  data: User[];
-}
+import { ApiResponse, User } from "../types/User";
 
 const API_URL = "https://bkmaferyogurt-production.up.railway.app/api";
 

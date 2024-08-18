@@ -2,20 +2,8 @@ import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { CartContext } from "../../../contexts/CartContext";
 import { ProductContext } from "../../../contexts/ProductContext";
+import { ProductContextType } from "../../../types/Product";
 
-interface Product {
-  IdProduct: number;
-  UrlImage: string;
-  Category: string;
-  Name: string;
-  Price: number;
-  Description: string;
-  NutritionalInformation: string;
-}
-
-interface ProductContextType {
-  products: Product[];
-}
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();

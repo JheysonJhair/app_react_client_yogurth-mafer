@@ -2,6 +2,7 @@ import axios from "axios";
 
 const apiUrl = "https://backenizipay-production.up.railway.app/api";
 
+//---------------------------------------------------------------- POST TOKEN IZIPAY
 export const getFormToken = async (paymentConf: {
   amount: number;
   currency: string;

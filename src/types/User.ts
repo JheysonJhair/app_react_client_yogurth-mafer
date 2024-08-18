@@ -33,3 +33,9 @@ export interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
 }
+
+export interface ApiResponse {
+  msg: string;
+  success: boolean;
+  data: User[];
+}

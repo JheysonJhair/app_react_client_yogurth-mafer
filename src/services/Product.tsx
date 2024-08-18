@@ -1,16 +1,9 @@
 import axios from "axios";
-import { Product } from "../types/Product";
+import { ApiResponse, Product } from "../types/Product";
 
 const API_URL = "https://bkmaferyogurt-production.up.railway.app/api/product";
 
-// Definición de la estructura de la respuesta de la API
-interface ApiResponse {
-  msg: string;
-  data: Product[];
-  success: boolean;
-}
-
-// Función para obtener productos
+//---------------------------------------------------------------- GET PRODUCTS
 export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const response = await axios.get<ApiResponse>(API_URL);
