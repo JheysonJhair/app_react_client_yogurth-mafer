@@ -505,7 +505,7 @@ const handlePaymentOption = (option: string) => {
                       {item.Product.Name}
                     </h5>
                     <p className="text-sm text-gray-600">
-                      {item.Quantity} x ${item.Product.Price.toFixed(2)}
+                      {item.Quantity} x S/{item.Product.Price.toFixed(2)}
                     </p>
                   </div>
                   <div className="text-right">

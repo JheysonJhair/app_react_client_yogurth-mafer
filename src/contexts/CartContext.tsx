@@ -86,6 +86,14 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   //---------------------------------------------------------------- ADD & UPDATE PRODUCT
   const sendCartUpdate = async (idProduct: number, quantity: number) => {
+    if (user === null) {
+      Swal.fire({
+        title: "Usuario no logueado!",
+        text: "Regístrate para agregar al carrito...",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
     if (user) {
       const request = {
         IdUser: user.IdUser,
@@ -95,13 +103,13 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       try {
         const response = await addToCartService(request);
-        if(response.success) {
+        if (response.success) {
           Swal.fire({
             position: "top-end",
             icon: "success",
             title: response.msg,
             showConfirmButton: false,
-            timer: 600
+            timer: 600,
           });
         }
       } catch (error) {
@@ -135,7 +143,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     if (removedItem) {
       const result = await deleteCartItem(removedItem.IdCartItem);
-      console.log(result.msg) ;
+      console.log(result.msg);
       if (result.success) {
         const newCart = cart.filter((item) => item.IdProduct !== id);
         setCart(newCart);
@@ -147,15 +155,15 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const clearCart = async () => {
     if (user) {
-      console.log(user)
-      const result = await clearAllCartItems(user.IdUser); 
-      console.log(result.msg) ;
+      console.log(user);
+      const result = await clearAllCartItems(user.IdUser);
+      console.log(result.msg);
       if (result.success) {
         setCart([]);
       } else {
         console.error(result.msg);
       }
-    } 
+    }
   };
   //-------------------------------------- UPDATE
   const increaseAmount = (id: number) => {
@@ -203,4 +211,3 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 export default CartProvider;
-  

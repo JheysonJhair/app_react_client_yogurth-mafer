@@ -64,6 +64,7 @@ export const PaymentCheckout = () => {
           formData.append("file", file);
         }
       }
+      console.log(formData);
       const response = await insertSale(formData);
       console.log(response);
       if (response.success) {

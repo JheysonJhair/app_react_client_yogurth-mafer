@@ -305,6 +305,8 @@ export const Header: React.FC = () => {
       });
       return;
     }
+    console.log(formData.code)
+    console.log(formData.email)
     setErrors({});
     try {
       const response = await verifyCode(formData.email, formData.code);
@@ -389,14 +391,6 @@ export const Header: React.FC = () => {
                   {showDropdown && (
                     <div className="absolute right-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                       <ul className="py-2">
-                        <li>
-                          <Link
-                            to="/profile"
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          >
-                            Perfil
-                          </Link>
-                        </li>
                         <li>
                           <button
                             onClick={handleLogout}
