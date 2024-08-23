@@ -10,12 +10,12 @@ export const PaymentCheckout = () => {
   const location = useLocation();
   const { paymentOption } = useParams<{ paymentOption: string }>();
 
-  const { totalAmount, cartId, shipmentId, seleccion, userId } =
+  const { totalAmount, cartId, shipmentId, selection, userId } =
     location.state as {
       totalAmount: number;
       cartId: number;
       shipmentId: number;
-      seleccion: string;
+      selection: string;
       userId: any;
     };
 
@@ -29,7 +29,6 @@ export const PaymentCheckout = () => {
       setFile(event.target.files[0]);
     }
   };
-
   //---------------------------------------------------------------- POST SALE
   const handleFormSubmit = async () => {
     if (paymentOption === "yape" && !file) {
@@ -48,7 +47,7 @@ export const PaymentCheckout = () => {
       formData.append("idShipment", shipmentId.toString());
       formData.append("Total", totalAmount.toString());
 
-      if (seleccion === "recoger") {
+      if (selection === "recoger") {
         formData.append("ShippingMethod", "true");
       } else {
         formData.append("ShippingMethod", "false");
@@ -64,9 +63,7 @@ export const PaymentCheckout = () => {
           formData.append("file", file);
         }
       }
-      console.log(formData);
       const response = await insertSale(formData);
-      console.log(response);
       if (response.success) {
         Swal.fire({
           title: "<strong>Compra exitosa!</strong>",
@@ -78,7 +75,7 @@ export const PaymentCheckout = () => {
             <b>Cualquier notificación se te estará enviando a tu correo electrónico.</b> 
           `,
           showCloseButton: true,
-          showCancelButton: true,
+          showCancelButton: false,
           focusConfirm: false,
           confirmButtonText: `
             <i class="fa fa-thumbs-up"></i> ¡Entendido!

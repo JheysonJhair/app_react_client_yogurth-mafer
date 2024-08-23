@@ -23,7 +23,9 @@ export async function obtenerUsuarios(): Promise<User[]> {
 
 //---------------------------------------------------------------- VERIFICATE MAIL -  VERIFICATE CODE => USER
 
-export const sendVerificationEmail = async (email: string) => {
+export async function sendVerificationEmail(
+  email: string
+): Promise<{ msg: string; success: boolean }> {
   try {
     const response = await fetch(`${API_URL}/mailValidation?email=${email}`, {
       method: "GET",
@@ -35,12 +37,14 @@ export const sendVerificationEmail = async (email: string) => {
     if (!response.ok) {
       throw new Error("API: Error al enviar la verificación de email");
     }
-    return response;
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
+    return responseData;
   } catch (error) {
     console.error("API: Error al enviar la verificación de email", error);
     throw error;
   }
-};
+}
 
 export const verifyCode = async (Email: string, Code: string) => {
   try {
@@ -54,6 +58,34 @@ export const verifyCode = async (Email: string, Code: string) => {
     throw error;
   }
 };
+
+//---------------------------------------------------------------- VERIFICATE PASSWORD
+
+export async function senRecoverypassword(
+  email: string
+): Promise<{ msg: string; success: boolean }> {
+  try {
+    const response = await fetch(
+      `${API_URL}/mailValidation/recoverPassword?email=${email}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("API: Error al enviar la verificación de password");
+    }
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
+    return responseData;
+  } catch (error) {
+    console.error("API: Error al enviar la verificación de password", error);
+    throw error;
+  }
+}
 
 //---------------------------------------------------------------- POST USER
 export async function registerUser(

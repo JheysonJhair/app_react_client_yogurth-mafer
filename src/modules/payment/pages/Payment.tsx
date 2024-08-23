@@ -9,6 +9,40 @@ import { fetchLastShipment, insertShipment } from "../../../services/Shipment";
 
 import "../style.css";
 import Swal from "sweetalert2";
+interface LocationData {
+  [department: string]: {
+    [province: string]: string[];
+  };
+}
+
+const locationData: LocationData = {
+  Apurímac: {
+    Andahuaylas: ["Andahuaylas", "San Jerónimo"],
+    Aymaraes: ["Lucre", "Tintay", "San Juan de Chacña", "Chalhuanca", "Toraya"],
+    Antabamba: ["Antabamba"],
+    Chincheros: ["Chincheros"],
+    Grau: ["Chuquibambilla", "Progreso"],
+  },
+  Ayacucho: {
+    Cangallo: ["Cangallo"],
+    Huamanga: ["Ayacucho", "Chiara"],
+    Lucanas: ["Puquio"],
+    Parinacochas: ["Coracora"],
+  },
+  Cusco: {
+    Cusco: ["Cusco", "Poroy", "Wanchaq"],
+    Espinar: ["Espinar"],
+    Acomayo: ["Acomayo"],
+    Anta: ["Anta"],
+    Calca: ["Calca", "Pisac"],
+    Canchis: ["Sicuani"],
+    Chumbivilcas: ["Santo Tomas"],
+    LaConvención: ["Santa Ana"],
+    Paruro: ["Paruro"],
+    Quispicanchi: ["Urcos"],
+    Urubamba: ["Urubamba"],
+  },
+};
 
 export const Payment = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -16,18 +50,15 @@ export const Payment = () => {
 
   const [selection, setSelection] = useState("");
   const [store, setStore] = useState("");
-  const [department, setDepartment] = useState("");
-  const [province, setProvince] = useState("");
-  const [district, setDistrict] = useState("");
   const [cartItems, setCartItems] = useState<CartItemResponse[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  const departments = ["Departamento 1", "Departamento 2"];
-  const provinces = ["Provincia 1", "Provincia 2"];
-  const districts = ["Distrito 1", "Distrito 2"];
+  const [department, setDepartment] = useState<string>("");
+  const [province, setProvince] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
 
   const [shipmentId, setShipmentId] = useState<number | null>(null);
 
@@ -70,7 +101,8 @@ export const Payment = () => {
       if (result.success && result.data.length > 0) {
         setShipmentId(result.data[0].IdShipment);
         const lastShipment: Shipment = result.data[0];
-        if (lastShipment.Company) {
+
+        if (lastShipment.Company == "Olva Courier") {
           setSelection("recoger");
           setStore(lastShipment.Company);
         } else {
@@ -85,14 +117,23 @@ export const Payment = () => {
     }
   };
 
-  //------------------------------------ CHANGE DATA
-  const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDepartment(e.target.value);
+  const handleDepartmentChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setDepartment(event.target.value);
+    setProvince("");
+    setDistrict("");
   };
 
-  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProvince(e.target.value);
+  const handleProvinceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setProvince(event.target.value);
+    setDistrict("");
   };
+  const provinces = department ? Object.keys(locationData[department]) : [];
+  const districts =
+    department && province ? locationData[department][province] : [];
 
   //------------------------------------ MODAL
   const handleShowModal = () => setShowModal(true);
@@ -126,11 +167,11 @@ export const Payment = () => {
 
     const shipmentData = {
       IdUser: user?.IdUser.toString(),
-      Company: selection === "recoger" ? store : "",
+      Company: selection === "recoger" ? "Olva Courier" : "",
       Region: selection === "envio" ? department : "",
       Province: selection === "envio" ? province : "",
       District: selection === "envio" ? district : "",
-      Address: selection === "recoger" ? user?.Address : user?.Address || "",
+      Address: selection === "recoger" ? "Victor acosta 1ra etapa" : "",
     };
 
     try {
@@ -153,26 +194,31 @@ export const Payment = () => {
     }
   };
 
-//---------------------------------- OPTION PAYMENT
-const handlePaymentOption = (option: string) => {
-  handleCloseModal();
-  const totalAmount = calculateTotal();
-  const cartId = cartItems[0].Cart.IdCart;
+  //---------------------------------- OPTION PAYMENT
+  const handlePaymentOption = (option: string) => {
+    handleCloseModal();
+    const totalAmount = calculateTotal();
+    const cartId = cartItems[0].Cart.IdCart;
 
-  if (shipmentId === null) {
-    console.error("Shipment ID no está disponible.");
-    return;
-  }
+    if (shipmentId === null) {
+      console.error("Shipment ID no está disponible.");
+      return;
+    }
 
-  if (user?.IdUser === undefined) {
-    console.error("User ID no está disponible.");
-    return;
-  }
-
-  navigate(`/payment/checkout/${option}`, {
-    state: { totalAmount, cartId, shipmentId, selection, userId: user.IdUser },
-  });
-};
+    if (user?.IdUser === undefined) {
+      console.error("User ID no está disponible.");
+      return;
+    }
+    navigate(`/payment/checkout/${option}`, {
+      state: {
+        totalAmount,
+        cartId,
+        shipmentId,
+        selection,
+        userId: user.IdUser,
+      },
+    });
+  };
 
   // ---------------------------------- TOTAL
   const calculateTotal = () => {
@@ -286,8 +332,9 @@ const handlePaymentOption = (option: string) => {
                         onChange={(e) => setStore(e.target.value)}
                       >
                         <option value="">Seleccione una sede</option>
-                        <option value="Sede 1">Sede 1</option>
-                        <option value="Sede 2">Sede 2</option>
+                        <option value="Olva Courier">
+                          Sede principal (Victor acosta 1ra etapa)
+                        </option>
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
                         <svg
@@ -372,7 +419,7 @@ const handlePaymentOption = (option: string) => {
                         onChange={handleDepartmentChange}
                       >
                         <option value="">Seleccione un departamento</option>
-                        {departments.map((dep) => (
+                        {Object.keys(locationData).map((dep) => (
                           <option key={dep} value={dep}>
                             {dep}
                           </option>
@@ -389,6 +436,7 @@ const handlePaymentOption = (option: string) => {
                       </div>
                     </div>
                   </div>
+
                   <div className="w-full md:w-1/3 px-3 mb-2">
                     <label
                       className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
@@ -402,6 +450,7 @@ const handlePaymentOption = (option: string) => {
                         id="province"
                         value={province}
                         onChange={handleProvinceChange}
+                        disabled={!department}
                       >
                         <option value="">Seleccione una provincia</option>
                         {provinces.map((prov) => (
@@ -421,6 +470,7 @@ const handlePaymentOption = (option: string) => {
                       </div>
                     </div>
                   </div>
+
                   <div className="w-full md:w-1/3 px-3 mb-2">
                     <label
                       className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
@@ -434,6 +484,7 @@ const handlePaymentOption = (option: string) => {
                         id="district"
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
+                        disabled={!province}
                       >
                         <option value="">Seleccione un distrito</option>
                         {districts.map((dist) => (
@@ -453,21 +504,14 @@ const handlePaymentOption = (option: string) => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-full px-3 mb-2">
+                  <div className="w-full px-3  py-4 border-y-2 text-center mx-3">
                     <label
-                      className="block uppercase tracking-wide text-black text-xs font-bold mb-2"
+                      className="block uppercase tracking-wide text-black text-xs font-bold"
                       htmlFor="address"
+                      style={{ color: "red", fontSize: "16px" }}
                     >
-                      Dirección:
+                      OJO, El pago por envio es aparte!
                     </label>
-                    <input
-                      className="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      id="address"
-                      type="text"
-                      placeholder="Ingrese su dirección"
-                      value={user?.Address}
-                      disabled
-                    />
                   </div>
                 </div>
               </>

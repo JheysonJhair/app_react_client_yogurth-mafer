@@ -12,6 +12,7 @@ import { login } from "../../services/Login";
 import {
   registerUser,
   sendVerificationEmail,
+  senRecoverypassword,
   updatePasswordUser,
   verifyCode,
 } from "../../services/Usuario";
@@ -153,7 +154,7 @@ export const Header: React.FC = () => {
           Password: formData.password!,
         };
         response = await login(loginData);
-        console.log(response.data.Rol)
+        console.log(response.data.Rol);
         if (response.success && response.data.Rol == 0) {
           localStorage.setItem("user", JSON.stringify(response.data));
           Swal.fire({
@@ -274,15 +275,44 @@ export const Header: React.FC = () => {
     }
     setErrors({});
     try {
-      console.log(formData.email);
-      await sendVerificationEmail(formData.email);
-      Swal.fire({
-        title: "Correo Enviado!",
-        text: "Hemos enviado un código de verificación a su correo.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-      setStep(1);
+      if (modalType == "register") {
+        const response = await sendVerificationEmail(formData.email);
+
+        if (response.success) {
+          Swal.fire({
+            title: "Correcto!",
+            text: response.msg,
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+          setStep(1);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: response.msg,
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      } else {
+        const response = await senRecoverypassword(formData.email);
+        if (response.success) {
+          Swal.fire({
+            title: "Correcto!",
+            text: response.msg,
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+          setStep(1);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: response.msg,
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      }
     } catch (error) {
       Swal.fire({
         title: "Error!",
@@ -305,8 +335,8 @@ export const Header: React.FC = () => {
       });
       return;
     }
-    console.log(formData.code)
-    console.log(formData.email)
+    console.log(formData.code);
+    console.log(formData.email);
     setErrors({});
     try {
       const response = await verifyCode(formData.email, formData.code);
