@@ -15,7 +15,7 @@ interface CartItemProps {
 }
 
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
-  const { removeFromCart, increaseAmount, decreaseAmount } =
+  const { removeFromCart, increaseAmount, decreaseAmount, loading } =
     useContext(CartContext)!;
 
   const { IdProduct, Name, UrlImage, Price, amount } = item;
@@ -46,7 +46,9 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             <div className="flex flex-1 max-w-[100px] items-center h-full border text-primary font-medium">
               <div
                 onClick={() => decreaseAmount(IdProduct)}
-                className="flex-1 h-full flex justify-center items-center cursor-pointer"
+                className={`flex-1 h-full flex justify-center items-center cursor-pointer ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 <IoMdRemove />
               </div>
@@ -55,14 +57,16 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
               </div>
               <div
                 onClick={() => increaseAmount(IdProduct)}
-                className="flex-1 h-full flex justify-center items-center cursor-pointer"
+                className={`flex-1 h-full flex justify-center items-center cursor-pointer ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 <IoMdAdd />
               </div>
             </div>
 
             <div className="flex flex-1 items-center justify-around">
-            S/ {Price}.00
+              S/ {Price}.00
             </div>
             <div className="flex-1 flex justify-end items-center text-primary font-medium">
               {`S/ ${parseFloat((Price * amount).toFixed(2))}`}

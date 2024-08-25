@@ -154,27 +154,34 @@ export const Header: React.FC = () => {
           Password: formData.password!,
         };
         response = await login(loginData);
-        console.log(response.data.Rol);
-        if (response.success && response.data.Rol == 0) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-          Swal.fire({
-            title: "Correcto!",
-            text: "Inicio de sesión exitoso.",
-            icon: "success",
-            confirmButtonText: "Aceptar",
-          }).then(() => {
-            handleCloseModal();
-            window.location.reload();
-          });
+        if (response.success) {
+          if (response.data.Rol == 0) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+            Swal.fire({
+              title: "Correcto!",
+              text: "Inicio de sesión exitoso.",
+              icon: "success",
+              confirmButtonText: "Aceptar",
+            }).then(() => {
+              handleCloseModal();
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: "Create una cuenta para continuar!",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
+          }
         } else {
           Swal.fire({
             title: "Error!",
-            text: "Opps, regístrate para cotninuar!",
+            text: response.msg,
             icon: "error",
             confirmButtonText: "Aceptar",
           });
         }
-        setFormData({});
       }
       if (modalType === "register") {
         const userData: User = {
@@ -196,6 +203,7 @@ export const Header: React.FC = () => {
             icon: "success",
             confirmButtonText: "Aceptar",
           }).then(() => {
+            setFormData({});
             handleCloseModal();
           });
         } else {
@@ -206,11 +214,10 @@ export const Header: React.FC = () => {
             confirmButtonText: "Aceptar",
           });
         }
-        setFormData({});
       }
       if (modalType === "reset") {
         const userData = {
-          Email: formData.mail!,
+          Email: formData.email!,
           Password: formData.password!,
         };
         response = await updatePasswordUser(userData);
@@ -335,8 +342,6 @@ export const Header: React.FC = () => {
       });
       return;
     }
-    console.log(formData.code);
-    console.log(formData.email);
     setErrors({});
     try {
       const response = await verifyCode(formData.email, formData.code);

@@ -34,10 +34,19 @@ export const Sidebar: React.FC = () => {
   }, []);
 
   const handlePayment = () => {
-    if (!user?.FirstName) {
-      setShowLoginModal(true);
+    if (itemAmount === 0) {
+      Swal.fire({
+        title: "Carrito vacío",
+        text: "Porfavor, seleccione algun producto",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     } else {
-      navigate("/payment");
+      if (!user?.FirstName) {
+        setShowLoginModal(true);
+      } else {
+        navigate("/payment");
+      }
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +113,8 @@ export const Sidebar: React.FC = () => {
       <div className="flex flex-col gap-y-3 py-4 mt-4">
         <div className="flex w-full justify-between items-center">
           <div className="uppercase font-semibold">
-            <span className="mr-2">Total:</span>s./ {parseFloat(total).toFixed(2)}
+            <span className="mr-2">Total:</span>s./{" "}
+            {parseFloat(total).toFixed(2)}
           </div>
           <div
             onClick={clearCart}

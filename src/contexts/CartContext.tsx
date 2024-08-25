@@ -24,6 +24,7 @@ interface CartContextType {
   increaseAmount: (id: number) => void;
   decreaseAmount: (id: number) => void;
   itemAmount: number;
+  loading: any;
   total: any;
 }
 
@@ -36,7 +37,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [itemAmount, setItemAmount] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [user, setUser] = useState<User | null>(null);
-
+  const [loading, setLoading] = useState(false); // Estado de carga
   //---------------------------------------------------------------- LOCAL STORAGE
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -102,6 +103,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       };
 
       try {
+        setLoading(true);
         const response = await addToCartService(request);
         if (response.success) {
           Swal.fire({
@@ -111,9 +113,18 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             showConfirmButton: false,
             timer: 600,
           });
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: response.msg,
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       } catch (error) {
         console.error("Error al actualizar el carrito:", "error");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -199,6 +210,7 @@ const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         addToCart,
         removeFromCart,
         clearCart,
+        loading,
         increaseAmount,
         decreaseAmount,
         itemAmount,

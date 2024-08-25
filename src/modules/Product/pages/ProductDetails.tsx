@@ -4,11 +4,10 @@ import { CartContext } from "../../../contexts/CartContext";
 import { ProductContext } from "../../../contexts/ProductContext";
 import { ProductContextType } from "../../../types/Product";
 
-
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { products } = useContext(ProductContext) as ProductContextType;
-  const { addToCart } = useContext(CartContext)!;
+  const { addToCart, loading } = useContext(CartContext)!;
 
   if (!id || isNaN(parseInt(id))) {
     return (
@@ -61,7 +60,7 @@ export const ProductDetails: React.FC = () => {
               {Name}
             </h1>
             <div className="text-xl text-red-500 font-medium mb-6">
-            S/ {Price}.00
+              S/ {Price}.00
             </div>
             <p className="mb-8 text-[#373739]">{Description}</p>
             <p className="mb-8  text-[#373739]">
@@ -70,7 +69,9 @@ export const ProductDetails: React.FC = () => {
             </p>
             <button
               onClick={() => handleAddToCart()}
-              className="bg-primary py-4 px-8 text-white"
+              className={`bg-primary py-4 px-8 text-white  ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Agregar al carrito
             </button>

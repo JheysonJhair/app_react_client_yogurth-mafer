@@ -65,25 +65,44 @@ export const PaymentCheckout = () => {
       }
       const response = await insertSale(formData);
       if (response.success) {
-        Swal.fire({
-          title: "<strong>Compra exitosa!</strong>",
-          icon: "info",
-          html: `
-              Puedes verificar tu compra realizada a travez de tu  <b>Gmail</b>.<br>
-            
-            
-            <b>Cualquier notificación se te estará enviando a tu correo electrónico.</b> 
+        if (paymentOption == "izipay") {
+          Swal.fire({
+            title: "<strong>Compra exitosa!</strong>",
+            icon: "info",
+            html: `
+                Puedes verificar tu compra realizada a travez de tu  <b>Gmail</b>.<br>                      
+              <b>Cualquier notificación se te estará enviando a tu correo electrónico.</b> 
+            `,
+            showCloseButton: true,
+            showCancelButton: false,
+            focusConfirm: false,
+            confirmButtonText: `
+              <i class="fa fa-thumbs-up"></i> ¡Entendido!
+            `,
+            confirmButtonAriaLabel: "Thumbs up, great!",
+          }).then(() => {
+            window.location.href = "/";
+          });
+        } else {
+          Swal.fire({
+            title: "<strong>Compra exitosa!</strong>",
+            icon: "info",
+            html: `
+            Hemos recibido tu voucher de pago y estamos en proceso de verificación.<br><br>
+            <b>Te notificaremos a través de tu <b>correo electrónico</b> cuando el pago haya sido confirmado.</b><br>
+            <b>Por favor, espera mientras revisamos la validez de tu pago. Gracias por tu pasiencia! :c</b>
           `,
-          showCloseButton: true,
-          showCancelButton: false,
-          focusConfirm: false,
-          confirmButtonText: `
-            <i class="fa fa-thumbs-up"></i> ¡Entendido!
-          `,
-          confirmButtonAriaLabel: "Thumbs up, great!",
-        }).then(() => {
-          window.location.href = "/";
-        });
+            showCloseButton: true,
+            showCancelButton: false,
+            focusConfirm: false,
+            confirmButtonText: `
+              <i class="fa fa-thumbs-up"></i> ¡Entendido!
+            `,
+            confirmButtonAriaLabel: "Thumbs up, great!",
+          }).then(() => {
+            window.location.href = "/";
+          });
+        }
       } else {
         Swal.fire({
           title: "Error!",
