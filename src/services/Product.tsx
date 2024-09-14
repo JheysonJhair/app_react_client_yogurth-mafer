@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse, Product } from "../types/Product";
 
-const API_URL = "https://bkmaferyogurt-production.up.railway.app/api/product";
+const API_URL = "https://bkmafer.jhedgost.com/api/product";
 
 //---------------------------------------------------------------- GET PRODUCTS
 export const fetchProducts = async (): Promise<Product[]> => {

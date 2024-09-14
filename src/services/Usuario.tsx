@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse, User } from "../types/User";
 
-const API_URL = "https://bkmaferyogurt-production.up.railway.app/api";
+const API_URL = "https://bkmafer.jhedgost.com/api";
 
 //---------------------------------------------------------------- GET USER
 export async function obtenerUsuarios(): Promise<User[]> {

@@ -383,7 +383,7 @@ export const Header: React.FC = () => {
         <div className="container mx-auto flex items-center justify-between h-full">
           <Link to={"/"}>
             <div className="flex items-center gap-4">
-              <img className="w-[35px]" src={Logo} alt="Logo" />
+              <img className="w-[45px]" src={Logo} alt="Logo" />
               <h2 className="text-black uppercase text-xl font-bold">
                 Yogurt Mafer
               </h2>

@@ -1,4 +1,4 @@
-const API_URL = "https://bkmaferyogurt-production.up.railway.app/api";
+const API_URL = "https://bkmafer.jhedgost.com/api";
 
 //---------------------------------------------------------------- GET LAST SHIPMENT
 export const fetchLastShipment = async (userId: number) => {

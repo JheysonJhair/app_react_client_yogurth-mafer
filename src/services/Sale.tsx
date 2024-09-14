@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "https://bkmaferyogurt-production.up.railway.app/api";
+const API_URL = "https://bkmafer.jhedgost.com/api";
 
 //---------------------------------------------------------------- POST SALE
 export const insertSale = async (data: any) => {

@@ -9,9 +9,9 @@ import {
 } from "../types/Cart";
 
 const CART_API_URL =
-  "https://bkmaferyogurt-production.up.railway.app/api/cart/insert";
+  "https://bkmafer.jhedgost.com/api/cart/insert";
 
-const API_URL = "https://bkmaferyogurt-production.up.railway.app/api/cart";
+const API_URL = "https://bkmafer.jhedgost.com/api/cart";
 
 //---------------------------------------------------------------- POST CART
 export const addToCart = async (

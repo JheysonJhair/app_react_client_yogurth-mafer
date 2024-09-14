@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "https://backenizipay-production.up.railway.app/api";
+const apiUrl = "https://bkmafer.jhedgost.com/api";
 
 //---------------------------------------------------------------- POST TOKEN IZIPAY
 export const getFormToken = async (paymentConf: {

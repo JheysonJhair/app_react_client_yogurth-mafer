@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BsFacebook,
-  BsInstagram,
-  BsWhatsapp,
-  BsGlobe,
-} from "react-icons/bs";
+import { BsFacebook, BsInstagram, BsWhatsapp, BsGlobe } from "react-icons/bs";
 import logo from "../../assets/img/logo.png";
 
 export const Footer: React.FC = () => {
@@ -89,24 +84,33 @@ export const Footer: React.FC = () => {
       </div>
 
       <div className="container mx-auto flex justify-between items-center mt-8">
-        <p className="text-gray-400 text-sm">Lima - Perú | Abancay - Perú</p>
         <div className="flex space-x-4">
           <a
             href="https://www.facebook.com/profile.php?id=100095415611499&mibextid=qi2Omg&rdid=MSwHuVnl7TqxRHSm&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2FLQxpCrBFqPSSSVgz%2F%3Fmibextid%3Dqi2Omg"
             aria-label="Facebook"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <BsFacebook className="text-2xl text-white hover:text-gray-400" />
           </a>
           <a
             href="https://www.instagram.com/imafersv/?hl=es"
             aria-label="Instagram"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <BsInstagram className="text-2xl text-white hover:text-gray-400" />
           </a>
-          <a href={whatsappLink} aria-label="WhatsApp">
+          <a
+            href={whatsappLink}
+            aria-label="WhatsApp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <BsWhatsapp className="text-2xl text-white hover:text-gray-400" />
           </a>
-        </div>
+        </div>{" "}
+        <p className="text-gray-400 text-sm">Lima - Perú | Abancay - Perú</p>
       </div>
     </footer>
   );
