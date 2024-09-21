@@ -1,30 +1,70 @@
-# React + TypeScript + Vite
+<div align="center">
+    <a href="https://github.com/JheysonJhair/app_react_client_sale_of_yogurt">
+      <img src="public/Logo.png" width="108px" />
+    </a>
+    <h1>JhairDev - Yogurth Mafer</h1>
+    <p align="center">
+        Full Stack Developer Jhair
+    </p>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Preview](public/preview.png)
 
-Currently, two official plugins are available:
+# Sistema de Venta de Yogurth
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Bienvenido al **Sistema de Venta de Yogur Maffer**, una aplicación frontend desarrollada para la venta en línea de productos de yogur. Este sistema permite a los usuarios adquirir productos de manera sencilla y segura, integrando pasarelas de pago como **Izipay** y permitiendo la aceptación de pagos a través de **Yape**.
 
-## Expanding the ESLint configuration
+## Tecnologías Utilizadas
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: Biblioteca principal utilizada para desarrollar la interfaz de usuario.
+- **TypeScript**: Lenguaje utilizado para el desarrollo de la lógica de la aplicación.
+- **Tailwind CSS**: Framework utilizado para el diseño y estilización de la interfaz de usuario.
+- **Vite**: Herramienta de construcción y desarrollo que optimiza la velocidad de carga y el rendimiento durante el desarrollo.
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Módulos del Sistema
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+La aplicación cuenta con los siguientes módulos:
+
+- **Módulo de Productos**: Gestión y administración de los productos de yogur disponibles para la venta.
+
+- **Módulo de Venta**: Facilita la compra de productos de yogur mediante métodos de pago seguros e integrados, como **Izipay** y **Yape**.
+- **Módulo de Reportes**: Genera informes sobre las ventas, productos más vendidos y estadísticas generales.
+- **Módulo de Usuarios**: Administración de la información de los clientes registrados.
+- **Módulo de Autenticación**: Permite la autenticación de usuarios para realizar compras de forma segura.
+
+---
+
+## Instalación
+
+1. **Requisitos previos**:
+   - Tener instalado **Node.js** y **npm** en tu sistema.
+   - Back-end:
+
+    ```bash
+    git clone https://github.com/Edsghot/yogurth-mafer
+
+
+2. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/JheysonJhair/app_react_client_sale_of_yogurt.git
+   cd app_react_client_sale_of_yogurt
+
+3. **Instala las dependencias con `npm install`.**
+
+    ```bash
+    npm install
+    ```
+
+3. **Ejecuta el comando `npm run dev` para iniciar el servidor de desarrollo.**
+    
+    ```bash
+    npm run dev
+    ```
+
+4. **Abre tu navegador y visita `http://localhost:5173`.**
+
+¡Listo! Ahora puedes comenzar a trabajar en el Sistema sin problemas.
+
+
