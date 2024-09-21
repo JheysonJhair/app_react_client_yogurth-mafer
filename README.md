@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="https://github.com/JheysonJhair/app_react_client_sale_of_yogurt">
+    <a href="https://github.com/JheysonJhair/app_react_client_yogurth-mafer">
       <img src="public/Logo.png" width="108px" />
     </a>
     <h1>JhairDev - Yogurth Mafer</h1>
@@ -48,8 +48,8 @@ La aplicación cuenta con los siguientes módulos:
 
 2. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/JheysonJhair/app_react_client_sale_of_yogurt.git
-   cd app_react_client_sale_of_yogurt
+   git clone https://github.com/JheysonJhair/app_react_client_yogurth-mafer.git
+   cd app_react_client_yogurth-mafer
 
 3. **Instala las dependencias con `npm install`.**
 
